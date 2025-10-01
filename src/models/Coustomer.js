@@ -17,6 +17,10 @@ const CustomerSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model("Customer", CustomerSchema);

@@ -1,6 +1,6 @@
 # 📖 Database Models Documentation (Restaurant ERP)
 
-## 1. **User Model**
+## 1. **Staff Model**
 
 يمثل المستخدمين (موظفين – مدراء – كاشير – شيف).
 
@@ -174,6 +174,26 @@
 
 - مربوط بـ `Inventory`.
 - مربوط بـ `User`.
+
+---
+
+## 8. **Customer Model**
+
+كل اوردر بيتعمل بيتخزن باسم عميل معين.
+
+```js
+{
+  name: String, // ex "mohamed"
+  phone: String, // ex "01010023763"
+  email: String, // ex "mohamedabdellhay1@gmail.com"
+  createdAt: Date
+}
+```
+
+🔗 **علاقات:**
+
+- مربوط بـ `Order`.
+- مربوط بـ `Reservation`.
 
 ---
 
