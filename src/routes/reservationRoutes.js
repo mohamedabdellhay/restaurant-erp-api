@@ -1,42 +1,20 @@
 import express from "express";
+import ReservationController from "../controllers/ReservationController.js";
 const router = express.Router();
 
 // get all reservations
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all reservations",
-  });
-});
+router.get("/", ReservationController.index);
 
 // get single reservation by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `get reservation by id ${id}`,
-  });
-});
+router.get("/:id", ReservationController.getReservationById);
 
 // create new reservation
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new reservation",
-  });
-});
+router.post("/", ReservationController.create);
 
 // update existed reservation
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `update existed reservation by id ${id}`,
-  });
-});
+router.put("/:id", ReservationController.update);
 
 // delete reservation
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `delete reservation by id ${id}`,
-  });
-});
+router.delete("/:id", ReservationController.delete);
 
 export default router;

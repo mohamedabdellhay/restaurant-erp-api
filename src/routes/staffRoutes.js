@@ -1,42 +1,20 @@
 import express from "express";
+import StaffController from "../controllers/StaffController.js";
 const router = express.Router();
 
 // get all employees
-router.get("/", (req, res) => {
-  res.json({
-    message: "all staff",
-  });
-});
+router.get("/", StaffController.index);
 
 // get employee by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `employee id ${id}`,
-  });
-});
+router.get("/:id", StaffController.getEmployeeById);
 
 // create new employee
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new employee",
-  });
-});
+router.post("/", StaffController.create);
 
 // update existing employee
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-
-  res.json({
-    message: `update existing employee id ${id}`,
-  });
-});
+router.put("/:id", StaffController.update);
 
 // delete employee
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `delete employee id ${id}`,
-  });
-});
+router.delete("/:id", StaffController.delete);
+
 export default router;

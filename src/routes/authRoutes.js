@@ -1,28 +1,13 @@
 import express from "express";
+import AuthController from "../controllers/AuthController.js";
 const router = express.Router();
 
-router.post("/register", (req, res) => {
-  res.json({
-    message: "register new user",
-  });
-});
+router.post("/register", AuthController.register);
 
-router.post("/login", (req, res) => {
-  res.json({
-    message: "logged user",
-  });
-});
+router.post("/login", AuthController.login);
 
-router.post("/logout", (req, res) => {
-  res.json({
-    message: "user logged out",
-  });
-});
+router.post("/logout", AuthController.logout);
 
-router.get("/me", (req, res) => {
-  res.json({
-    message: "user data",
-  });
-});
+router.get("/profile", AuthController.getProfile);
 
 export default router;

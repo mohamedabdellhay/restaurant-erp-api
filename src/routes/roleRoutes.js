@@ -1,40 +1,20 @@
 import express from "express";
+import RoleController from "../controllers/RoleController.js";
 const router = express.Router();
 
 // get all roles
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all roles",
-  });
-});
+router.get("/", RoleController.index);
 
 // create new role
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new role",
-  });
-});
+router.post("/", RoleController.create);
 
 // update existed role
-router.put("/:id", (req, res) => {
-  res.json({
-    message: "update existed role",
-  });
-});
+router.put("/:id", RoleController.update);
 
 // delete role
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `delete role ${id}`,
-  });
-});
+router.delete("/:id", RoleController.delete);
 
 // get all permissions
-router.get("/permissions", (req, res) => {
-  res.json({
-    message: "all roles permissions",
-  });
-});
+router.get("/permissions", RoleController.getAllPermissions);
 
 export default router;

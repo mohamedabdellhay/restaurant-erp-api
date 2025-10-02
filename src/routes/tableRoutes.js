@@ -1,43 +1,20 @@
 import express from "express";
+import TableController from "../controllers/TableController.js";
 const router = express.Router();
 
 // get all tables
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all tables",
-  });
-});
+router.get("/", TableController.index);
 
 //  get table by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `get table by id ${id}`,
-  });
-});
+router.get("/:id", TableController.getTableById);
 
 // create new table
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new Table",
-  });
-});
+router.post("/", TableController.create);
 
 // update table
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `update able id ${id}`,
-  });
-});
+router.put("/:id", TableController.update);
 
 // delete table
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-
-  res.json({
-    message: `delete table ${id}`,
-  });
-});
+router.delete("/:id", TableController.delete);
 
 export default router;

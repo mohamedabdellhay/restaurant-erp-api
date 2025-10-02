@@ -1,34 +1,20 @@
 import express from "express";
+import categoryController from "../controllers/CategoryController.js";
 const router = express.Router();
 
 // get all categories
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all categories",
-  });
-});
+router.get("/", categoryController.index);
 
 // get category by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `get category by id ${id}`,
-  });
-});
+router.get("/:id", categoryController.getCategoryById);
 
 // create new category
-router.post("/", (req, res) => {
-  res.json({
-    message: `create new category`,
-  });
-});
+router.post("/", categoryController.create);
 
 // update existed category
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `update existed category  id ${id}`,
-  });
-});
+router.put("/:id", categoryController.update);
+
+// delete category by id
+router.delete("/:id", categoryController.delete);
 
 export default router;

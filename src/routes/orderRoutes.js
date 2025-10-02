@@ -1,42 +1,20 @@
 import express from "express";
+import OrderController from "../controllers/OrderController.js";
 const router = express.Router();
 
 // get all orders
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all orders",
-  });
-});
+router.get("/", OrderController.index);
 
 // get order by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `get order with id ${id}`,
-  });
-});
+router.get("/:id", OrderController.getOrderById);
 
 // create new order
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new order",
-  });
-});
+router.post("/", OrderController.create);
 
 // update existed order
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `update order by id ${id}`,
-  });
-});
+router.put("/:id", OrderController.update);
 
 // delete order
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `delete order by ${id}`,
-  });
-});
+router.delete("/:id", OrderController.delete);
 
 export default router;

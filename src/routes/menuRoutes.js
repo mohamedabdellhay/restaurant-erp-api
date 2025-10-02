@@ -1,42 +1,20 @@
 import express from "express";
+import MenuController from "../controllers/MenuController.js";
 const router = express.Router();
 
 // get all menus
-router.get("/", (req, res) => {
-  res.json({
-    message: "get all menus",
-  });
-});
+router.get("/", MenuController.index);
 
 // get menu by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `get menu by id ${id}`,
-  });
-});
+router.get("/:id", MenuController.getMenuItemById);
 
 // create new menu
-router.post("/", (req, res) => {
-  res.json({
-    message: "create new menu",
-  });
-});
+router.post("/", MenuController.create);
 
 // update single menu
-router.put("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `update menu by id ${id}`,
-  });
-});
+router.put("/:id", MenuController.update);
 
 // delete menu
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  res.json({
-    message: `delete menu by id ${id}`,
-  });
-});
+router.delete("/:id", MenuController.delete);
 
 export default router;

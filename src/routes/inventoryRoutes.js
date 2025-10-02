@@ -1,5 +1,7 @@
 import express from "express";
 import groupRoutes from "../utils/groupRoutes.js";
+import SupplierController from "../controllers/SupplierController.js";
+import IngredientController from "../controllers/IngredientController.js";
 const router = express.Router();
 
 // Extend Express Router with group method
@@ -8,74 +10,37 @@ router.group = groupRoutes;
 // Suppliers endpoint
 router.group("/suppliers", (route) => {
   // get all suppliers
-  route.get("/", (req, res) => {
-    res.json({
-      message: "get all supplies",
-    });
-  });
+  route.get("/", SupplierController.index);
 
   // create new supplier
-  route.post("/", (req, res) => {
-    res.json({
-      message: "create new supplier",
-    });
-  });
+  route.post("/", SupplierController.create);
 
-  // update single supplier
-  route.put("/:id", (req, res) => {
-    const id = req.params.id;
-    res.json({
-      message: `update supplier data by id ${id}`,
-    });
-  });
+  // get single supplier
+  route.get("/:id", SupplierController.getSupplierById);
 
   // delete supplier
-  route.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    res.json({
-      message: `delete supplier by id ${id}`,
-    });
-  });
+  route.delete("/:id", SupplierController.delete);
+
+  // update supplier
+  route.put("/:id", SupplierController.update);
 });
 
 // ingredients operations
 router.group("/ingredients", (route) => {
   // get all ingredients
-  route.get("/", (req, res) => {
-    res.json({
-      message: "get all ingredients",
-    });
-  });
+  route.get("/", IngredientController.index);
 
   // get ingredient by id
-  route.get("/:id", (req, res) => {
-    const id = req.params.id;
-    res.json({
-      message: `get single ingredient by id ${id}`,
-    });
-  });
+  route.get("/:id", IngredientController.getIngredientById);
 
   // add new ingredient
-  route.post("/", (req, res) => {
-    res.json({
-      message: "add new ingredient",
-    });
-  });
+  route.post("/", IngredientController.create);
 
   // update existed ingredient
-  route.put("/:id", (req, res) => {
-    const id = req.params.id;
-    res.json({
-      message: `update existed ingredient by id ${id}`,
-    });
-  });
+  route.put("/:id", IngredientController.update);
 
   // delete an ingredient
-  route.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    res.json({
-      message: `delete an ingredient with id ${id}`,
-    });
-  });
+  route.delete("/:id", IngredientController.delete);
 });
+
 export default router;
