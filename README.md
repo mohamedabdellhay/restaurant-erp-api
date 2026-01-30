@@ -417,15 +417,15 @@ restaurant-erp-api/
 
 ```bash
 # Development
-npm run dev          # Start with nodemon (auto-reload)
+pnpm run dev          # Start with nodemon (auto-reload)
 
 # Production
-npm start            # Start production server
+pnpm start            # Start production server
 
 # Testing (coming soon)
-npm test             # Run all tests
-npm run test:watch   # Run tests in watch mode
-npm run test:coverage # Generate coverage report
+pnpm test             # Run all tests
+pnpm run test:watch   # Run tests in watch mode
+pnpm run test:coverage # Generate coverage report
 ```
 
 ## 🔐 Security Best Practices
@@ -458,7 +458,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - _Initial work_ - [YourGitHub](https://github.com/yourusername)
+- **Mohamed Abdellhay** - _Initial work_ - [Mohamed Abdellhay](https://linkedin.com/in/mohamedabdellhay)
 
 ## 🙏 Acknowledgments
 
