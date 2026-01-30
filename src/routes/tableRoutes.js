@@ -12,7 +12,7 @@ router.get("/:id", TableController.getTableById);
 router.post("/", TableController.create);
 
 // update table
-router.put("/:id", TableController.update);
+router.patch("/:id", TableController.update);
 
 // delete table
 router.delete("/:id", TableController.delete);

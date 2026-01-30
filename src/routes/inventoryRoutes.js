@@ -1,7 +1,7 @@
 import express from "express";
 import groupRoutes from "../utils/groupRoutes.js";
 import SupplierController from "../controllers/SupplierController.js";
-import IngredientController from "../controllers/IngredientController.js";
+import InventoryItemController from "../controllers/InventoryItemController.js";
 const router = express.Router();
 
 // Extend Express Router with group method
@@ -25,22 +25,22 @@ router.group("/suppliers", (route) => {
   route.put("/:id", SupplierController.update);
 });
 
-// ingredients operations
-router.group("/ingredients", (route) => {
+// inventoryItems operations
+router.group("/items", (route) => {
   // get all ingredients
-  route.get("/", IngredientController.index);
+  route.get("/", InventoryItemController.index);
 
   // get ingredient by id
-  route.get("/:id", IngredientController.getIngredientById);
+  route.get("/:id", InventoryItemController.getIngredientById);
 
   // add new ingredient
-  route.post("/", IngredientController.create);
+  route.post("/", InventoryItemController.create);
 
   // update existed ingredient
-  route.put("/:id", IngredientController.update);
+  route.put("/:id", InventoryItemController.update);
 
   // delete an ingredient
-  route.delete("/:id", IngredientController.delete);
+  route.delete("/:id", InventoryItemController.delete);
 });
 
 export default router;

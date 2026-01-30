@@ -1,49 +1,197 @@
+import Staff from "../models/Staff.js";
+import tokenHelper from "../utils/tokenHelper.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ResponseHandler from "../utils/responseHandler.js";
+import AppError from "../utils/errors/AppError.js";
+
 class AuthController {
-  // Register new user
-  async register(req, res) {
-    res.json({
-      message: "register new user",
+  /**
+   * Register new staff member
+   * POST /api/auth/register
+   */
+  register = asyncHandler(async (req, res) => {
+    const { name, email, password, role, restaurant } = req.body;
+
+    // Check if user already exists
+    const existingStaff = await Staff.findOne({ email });
+    if (existingStaff) {
+      throw new AppError("Email already registered", 409);
+    }
+
+    // Create staff
+    const staff = await Staff.create({
+      name,
+      email,
+      passwordHash: password,
+      role,
+      restaurant,
     });
-  }
 
-  // Login user
-  async login(req, res) {
-    res.json({
-      message: "logged user",
+    // Generate tokens
+    const { accessToken, refreshToken } = tokenHelper.generateTokenPair({
+      id: staff._id,
+      role: staff.role,
     });
-  }
 
-  // Logout user
-  async logout(req, res) {
-    res.json({
-      message: "user logged out",
+    // Set cookie
+    res.cookie("token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-  }
 
-  // Get current user profile
-  async getProfile(req, res) {
-    res.json({
-      message: "user data",
+    ResponseHandler.created(
+      res,
+      {
+        staff,
+        accessToken,
+        refreshToken,
+      },
+      "Staff registered successfully",
+    );
+  });
+
+  /**
+   * Login staff member
+   * POST /api/auth/login
+   */
+  login = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    // Find staff with password
+    const staff = await Staff.findOne({ email }).select("+passwordHash");
+
+    if (!staff) {
+      throw new AppError("Invalid credentials", 401);
+    }
+
+    // Check if staff is active
+    if (!staff.isActive) {
+      throw new AppError("Account is deactivated", 403);
+    }
+
+    // Verify password
+    const isPasswordValid = await staff.comparePassword(password);
+
+    if (!isPasswordValid) {
+      throw new AppError("Invalid credentials", 401);
+    }
+
+    // Generate tokens
+    const { accessToken, refreshToken } = tokenHelper.generateTokenPair({
+      id: staff._id,
+      role: staff.role,
     });
-  }
 
-  // Update user profile
-  async updateProfile(req, res) {}
+    // Set cookie
+    res.cookie("token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
-  // Change password
-  async changePassword(req, res) {}
+    // Remove password from response
+    staff.passwordHash = undefined;
 
-  // Forgot password - send reset link
-  async forgotPassword(req, res) {}
+    ResponseHandler.success(
+      res,
+      {
+        staff,
+        accessToken,
+        refreshToken,
+      },
+      "Logged in successfully",
+    );
+  });
 
-  // Reset password with token
-  async resetPassword(req, res) {}
+  /**
+   * Logout staff member
+   * POST /api/auth/logout
+   */
+  logout = asyncHandler(async (req, res) => {
+    res.cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
 
-  // Refresh access token
-  async refreshToken(req, res) {}
+    ResponseHandler.success(res, null, "Logged out successfully");
+  });
 
-  // Verify email
-  async verifyEmail(req, res) {}
+  /**
+   * Get current user profile
+   * GET /api/auth/me
+   */
+  getProfile = asyncHandler(async (req, res) => {
+    const staff = await Staff.findById(req.user._id).populate("restaurant");
+
+    ResponseHandler.success(res, staff, "Profile retrieved successfully");
+  });
+
+  /**
+   * Update user profile
+   * PUT /api/auth/profile
+   */
+  updateProfile = asyncHandler(async (req, res) => {
+    const { name, email } = req.body;
+
+    const staff = await Staff.findByIdAndUpdate(
+      req.user._id,
+      { name, email },
+      { new: true, runValidators: true },
+    );
+
+    ResponseHandler.success(res, staff, "Profile updated successfully");
+  });
+
+  /**
+   * Change password
+   * PUT /api/auth/change-password
+   */
+  changePassword = asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    const staff = await Staff.findById(req.user._id).select("+passwordHash");
+
+    // Verify current password
+    const isPasswordValid = await staff.comparePassword(currentPassword);
+
+    if (!isPasswordValid) {
+      throw new AppError("Current password is incorrect", 401);
+    }
+
+    // Update password
+    staff.passwordHash = newPassword;
+    await staff.save();
+
+    ResponseHandler.success(res, null, "Password changed successfully");
+  });
+
+  /**
+   * Refresh access token
+   * POST /api/auth/refresh-token
+   */
+  refreshToken = asyncHandler(async (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      throw new AppError("Refresh token is required", 400);
+    }
+
+    // Verify refresh token
+    const decoded = tokenHelper.verifyRefreshToken(refreshToken);
+
+    // Generate new access token
+    const newAccessToken = tokenHelper.generateAccessToken({
+      id: decoded.id,
+      role: decoded.role,
+    });
+
+    ResponseHandler.success(
+      res,
+      { accessToken: newAccessToken },
+      "Token refreshed successfully",
+    );
+  });
 }
 
 export default new AuthController();

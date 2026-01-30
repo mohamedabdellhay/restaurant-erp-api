@@ -190,12 +190,62 @@
 }
 ```
 
+## 9. **Invoice Model**
+
+كل اوردر بيتعمل لازم يبقي ليه فاتورة بالسعر وقت عمل الاوردر والفاتورة صلاحيتها 8 ساعات وبعد كده مش ممكن يتعدل عليها .
+
+```js
+
+    order: order id,
+    customer: customer id,
+    table: table number \if inside restaurant,
+    items: [
+      {
+        product:menu item id,
+        quantity: "5",
+        price: unit price at create invoice time,
+        total:  quantity * price
+      },
+    ],
+    subTotal: total before tax,
+    taxPercent: 1,
+    serviceChargePercent: 1,
+    discount: {
+      type: Number,
+      default: 0, // خصم لو فيه كوبون أو عرض
+    },
+    grandTotal: {
+      type: Number,
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["cash", "card", "wallet", "online"],
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["paid", "unpaid", "pending"],
+      default: "unpaid",
+    },
+    issuedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Staff", // الكاشير أو الموظف اللي عمل الفاتورة
+      required: true,
+    },
+    notes: {
+      type: String,
+    },
+
+---
+
 🔗 **علاقات:**
 
 - مربوط بـ `Order`.
 - مربوط بـ `Reservation`.
 
 ---
+
 
 # ملاحظات عامة
 
@@ -207,3 +257,4 @@
   - **Reservation System**.
   - **Inventory Management**.
   - **User Roles & Permissions**.
+```
