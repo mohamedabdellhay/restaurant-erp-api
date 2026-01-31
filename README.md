@@ -356,6 +356,11 @@ restaurant-erp-api/
 
 ### Sprint 2: Menu & Table Management 🚧 IN PROGRESS
 
+- [x] Implement Staff Management CRUD (Admin/Manager)
+- [x] Secure staff routes with RBAC (Admin)
+- [x] Add validation and status toggling for staff
+- [x] Build Staff API documentation in Swagger
+
 - [ ] Create Category model
 - [ ] Implement CategoryController
 - [ ] Complete MenuItemController
