@@ -69,3 +69,20 @@ export const optionalAuth = asyncHandler(async (req, res, next) => {
 
   next();
 });
+
+/**
+ * Restrict routes to specific roles
+ */
+export const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles is an array ['admin', 'manager']
+    if (!roles.includes(req.user.role)) {
+      throw new AppError(
+        "You do not have permission to perform this action",
+        403,
+      );
+    }
+
+    next();
+  };
+};

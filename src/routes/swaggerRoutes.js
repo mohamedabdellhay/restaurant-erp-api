@@ -426,6 +426,59 @@ Authorization: Bearer YOUR_JWT_TOKEN
             isActive: { type: "boolean" },
           },
         },
+        SalesReport: {
+          type: "object",
+          properties: {
+            totalRevenue: { type: "number" },
+            averageOrderValue: { type: "number" },
+            totalTax: { type: "number" },
+            totalServiceCharge: { type: "number" },
+            count: { type: "number" },
+          },
+        },
+        InventoryReport: {
+          type: "object",
+          properties: {
+            totalItems: { type: "number" },
+            totalStockValue: { type: "number" },
+            lowStockCount: { type: "number" },
+          },
+        },
+        OrderAnalytics: {
+          type: "object",
+          properties: {
+            statusDistribution: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  _id: { type: "string" },
+                  count: { type: "number" },
+                },
+              },
+            },
+            typeDistribution: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  _id: { type: "string" },
+                  count: { type: "number" },
+                },
+              },
+            },
+            hourlyTrends: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  _id: { type: "number" },
+                  count: { type: "number" },
+                },
+              },
+            },
+          },
+        },
         SuccessResponse: {
           type: "object",
           properties: {

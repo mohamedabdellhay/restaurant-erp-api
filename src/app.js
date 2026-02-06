@@ -18,7 +18,12 @@ connectDB();
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "*",
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 // Rate limiting
@@ -27,6 +32,7 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
 });
+
 app.use("/api", limiter);
 
 // Body parser

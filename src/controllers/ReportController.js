@@ -1,27 +1,46 @@
+import ReportService from "../services/ReportService.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ResponseHandler from "../utils/responseHandler.js";
+
 class ReportController {
-  async getSales(req, res) {
-    res.json({
-      message: "sales report",
-    });
-  }
+  getSales = asyncHandler(async (req, res) => {
+    const { from, to } = req.query;
+    const sales = await ReportService.getSalesPerformance(from, to);
+    ResponseHandler.success(
+      res,
+      sales[0] || {},
+      "Sales report retrieved successfully",
+    );
+  });
 
-  async getInventory(req, res) {
-    res.json({
-      message: "inventory report",
-    });
-  }
+  getInventory = asyncHandler(async (req, res) => {
+    const inventory = await ReportService.getInventorySummary();
+    ResponseHandler.success(
+      res,
+      inventory[0] || {},
+      "Inventory report retrieved successfully",
+    );
+  });
 
-  async getReservations(req, res) {
-    res.json({
-      message: "reservations report",
-    });
-  }
+  getOrders = asyncHandler(async (req, res) => {
+    const { from, to } = req.query;
+    const analytics = await ReportService.getOrderAnalytics(from, to);
+    ResponseHandler.success(
+      res,
+      analytics[0] || {},
+      "Order analytics retrieved successfully",
+    );
+  });
 
-  async getOrders(req, res) {
-    res.json({
-      message: "orders report",
-    });
-  }
+  getReservations = asyncHandler(async (req, res) => {
+    // Placeholder for now as per current requirements,
+    // but could be expanded similar to orders
+    ResponseHandler.success(
+      res,
+      {},
+      "Reservations report retrieved successfully",
+    );
+  });
 }
 
 export default new ReportController();

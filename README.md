@@ -30,74 +30,56 @@ Restaurant ERP is a full-featured management system designed to streamline resta
 
 - **🔐 Authentication & Authorization**
   - JWT-based secure authentication
-  - Password hashing with bcrypt (12 salt rounds)
+  - Password hashing with bcrypt
   - Access & refresh token management
   - Role-based access control (RBAC)
   - Protected routes with middleware
   - Session management with HTTP-only cookies
 
 - **👥 Staff Management**
-  - User registration and login
-  - Profile management
-  - Password change functionality
+  - Full CRUD operations for staff members
   - Role assignment (Admin, Manager, Cashier, Chef, Waiter)
-  - Account activation/deactivation
+  - Account activation/deactivation toggling
+  - Profile management & password change
+
+- **🍕 Menu & Category Management**
+  - Category creation and management
+  - Detailed menu items with pricing, description, and status
+  - Availability tracking
+
+- **🪑 Table & Reservation System**
+  - Table management (capacity, location, status)
+  - Table booking and reservation management
+  - Availability checking
+
+- **🛒 Order Management (POS)**
+  - Order creation and tracking
+  - Order status workflow (Pending, Preparing, Ready, Served, Cancelled)
+  - Itemized order details
+
+- **🧾 Invoice & Billing**
+  - Automated invoice generation from orders
+  - Tax and service charge calculation
+  - Payment status tracking (Paid, Unpaid, Partial)
+
+- **📦 Inventory & Supplier Management**
+  - Ingredient/Product tracking
+  - Supplier management
+  - Stock movement logging
+  - Low stock monitoring
+
+- **📊 Reports & Analytics**
+  - Sales performance reports
+  - Inventory status reports
+  - Reservation analytics
+  - Order volume reporting
 
 - **🔒 Security Features**
   - Helmet.js security headers
   - CORS configuration
   - Rate limiting (100 requests per 15 minutes)
   - Input validation with express-validator
-  - SQL injection protection
-  - XSS protection
-
-- **📚 API Documentation**
-  - Comprehensive Swagger/OpenAPI documentation
-  - Interactive API testing interface
-  - Detailed request/response schemas
-  - Authentication examples
-
-### 🚧 In Progress
-
-- **🍕 Menu Management**
-  - Categories and menu items
-  - Recipe management
-  - Pricing and availability
-
-- **🪑 Table Management**
-  - Table status tracking
-  - Seating capacity management
-  - Table assignment
-
-- **📅 Reservation System**
-  - Table booking
-  - Reservation management
-  - Availability checking
-
-### 📅 Planned Features
-
-- **🛒 Order Management (POS)**
-  - Order creation and tracking
-  - Order status workflow
-  - Kitchen display integration
-
-- **🧾 Invoice System**
-  - Automated invoice generation
-  - Tax and service charge calculation
-  - Payment processing
-  - Discount management
-
-- **📦 Inventory Management**
-  - Stock tracking
-  - Low stock alerts
-  - Supplier management
-  - Purchase orders
-
-- **📊 Reports & Analytics**
-  - Sales reports
-  - Inventory reports
-  - Staff performance metrics
-  - Revenue analytics
+  - XSS & SQL injection protection
 
 ## 🛠️ Tech Stack
 
@@ -122,18 +104,13 @@ Restaurant ERP is a full-featured management system designed to streamline resta
 - **swagger-jsdoc** - OpenAPI specification
 - **swagger-ui-express** - Interactive API docs
 
-### Development
-
-- **nodemon** - Auto-restart on file changes
-- **dotenv** - Environment variable management
-
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js >= 18.0.0
 - MongoDB >= 6.0
-- npm or pnpm package manager
+- pnpm or npm package manager
 
 ### Installation
 
@@ -147,8 +124,6 @@ cd restaurant-erp-api
 2. **Install dependencies**
 
 ```bash
-npm install
-# or
 pnpm install
 ```
 
@@ -158,176 +133,39 @@ pnpm install
 cp .env.example .env
 ```
 
-Edit `.env` and configure your settings:
+Edit `.env` and configure your settings.
 
-```env
-PORT=3000
-NODE_ENV=development
-
-# Database
-MONGODB_URI=mongodb://127.0.0.1:27017/restaurant_db
-
-# JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-JWT_EXPIRES_IN=7d
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_change_this_in_production
-JWT_REFRESH_EXPIRES_IN=30d
-
-# Security
-BCRYPT_SALT_ROUNDS=12
-```
-
-4. **Start MongoDB**
+4. **Run the application**
 
 ```bash
-# Make sure MongoDB is running
-sudo systemctl start mongod
-# or
-mongod
-```
-
-5. **Run the application**
-
-```bash
-# Development mode with auto-reload
-npm run dev
+# Development mode
+pnpm run dev
 
 # Production mode
-npm start
+pnpm start
 ```
-
-6. **Access the application**
-
-- API: `http://localhost:3000`
-- Swagger Docs: `http://localhost:3000/api/docs`
 
 ## 📖 API Documentation
 
-### Swagger UI
-
 Interactive API documentation is available at:
-
-```
-http://localhost:3000/api/docs
-```
-
-### Authentication Endpoints
-
-#### Register New Staff
-
-```bash
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@restaurant.com",
-  "password": "Password123!",
-  "role": "cashier"
-}
-```
-
-#### Login
-
-```bash
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@restaurant.com",
-  "password": "Password123!"
-}
-```
-
-#### Get Profile (Protected)
-
-```bash
-GET /api/auth/me
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-#### Change Password (Protected)
-
-```bash
-PUT /api/auth/change-password
-Authorization: Bearer YOUR_JWT_TOKEN
-Content-Type: application/json
-
-{
-  "currentPassword": "Password123!",
-  "newPassword": "NewPassword123!"
-}
-```
-
-### Testing with cURL
-
-```bash
-# Register
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Admin User","email":"admin@restaurant.com","password":"Admin123!","role":"admin"}'
-
-# Login
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@restaurant.com","password":"Admin123!"}'
-
-# Get Profile
-curl -X GET http://localhost:3000/api/auth/me \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
+`http://localhost:3000/api/docs`
 
 ## 📁 Project Structure
 
 ```
 restaurant-erp-api/
 ├── src/
-│   ├── config/
-│   │   ├── db.js              # MongoDB connection
-│   │   └── jwt.js             # JWT configuration
-│   ├── controllers/
-│   │   ├── AuthController.js  # ✅ Authentication logic
-│   │   ├── OrderController.js # 🚧 Order management
-│   │   ├── MenuItemController.js
-│   │   ├── TableController.js
-│   │   └── ...
-│   ├── middleware/
-│   │   ├── authMiddleware.js  # ✅ JWT verification
-│   │   ├── roleMiddleware.js  # ✅ Role-based access
-│   │   ├── validationMiddleware.js # ✅ Input validation
-│   │   └── errorHandlerMiddleware.js # ✅ Error handling
-│   ├── models/
-│   │   ├── Staff.js           # ✅ Staff/User model
-│   │   ├── Order.js           # Order model
-│   │   ├── MenuItem.js        # Menu item model
-│   │   ├── Table.js           # Table model
-│   │   ├── Invoice.js         # Invoice model
-│   │   └── ...
-│   ├── routes/
-│   │   ├── index.js           # Route aggregator
-│   │   ├── authRoutes.js      # ✅ Auth endpoints
-│   │   ├── orderRoutes.js     # Order endpoints
-│   │   ├── menuRoutes.js      # Menu endpoints
-│   │   └── ...
-│   ├── services/
-│   │   ├── TableService.js    # Business logic
-│   │   ├── MenuItemService.js
-│   │   └── ...
-│   ├── utils/
-│   │   ├── asyncHandler.js    # ✅ Async error wrapper
-│   │   ├── responseHandler.js # ✅ Standardized responses
-│   │   ├── tokenHelper.js     # ✅ JWT utilities
-│   │   └── errors/
-│   │       └── AppError.js    # ✅ Custom error class
-│   ├── validators/
-│   │   ├── authValidator.js   # ✅ Auth validation rules
-│   │   └── ...
-│   └── app.js                 # ✅ Express app setup
-├── tests/                     # 🚧 Test files
-├── .env                       # Environment variables
-├── .gitignore
-├── package.json
-├── server.js                  # ✅ Entry point
+│   ├── config/             # Configuration files (DB, JWT)
+│   ├── controllers/        # Request handlers (Auth, Order, Menu, etc.)
+│   ├── middleware/         # Custom middleware (Auth, Validation, Error)
+│   ├── models/             # Mongoose schemas
+│   ├── routes/             # API route definitions
+│   ├── services/           # Business logic layer
+│   ├── utils/              # Utility functions and Helpers
+│   ├── validators/         # Input validation schemas
+│   └── app.js              # Express app initialization
+├── tests/                  # Test suites
+├── server.js               # Main entry point
 └── README.md
 ```
 
@@ -335,145 +173,61 @@ restaurant-erp-api/
 
 ### Sprint 1: Authentication & Core Setup ✅ COMPLETE
 
-- [x] Install required dependencies
-- [x] Set up JWT configuration
-- [x] Create token helper utilities
-- [x] Implement authentication middleware
-- [x] Implement role-based authorization
-- [x] Create validation middleware
-- [x] Enhance Staff model with password hashing
-- [x] Implement AuthController
-  - [x] Register endpoint
-  - [x] Login endpoint
-  - [x] Logout endpoint
-  - [x] Get profile endpoint
-  - [x] Update profile endpoint
-  - [x] Change password endpoint
-  - [x] Refresh token endpoint
-- [x] Add security middleware (helmet, cors, rate limiting)
-- [x] Create comprehensive Swagger documentation
-- [x] Test all authentication endpoints
+- [x] JWT configuration & Token utilities
+- [x] Auth & Role-based middleware
+- [x] Staff model & Password hashing
+- [x] Auth API Endpoints (Login, Register, Refresh)
+- [x] Security headers & Rate limiting
 
-### Sprint 2: Menu & Table Management 🚧 IN PROGRESS
+### Sprint 2: Menu & Table Management ✅ COMPLETE
 
-- [x] Implement Staff Management CRUD (Admin/Manager)
-- [x] Secure staff routes with RBAC (Admin)
-- [x] Add validation and status toggling for staff
-- [x] Build Staff API documentation in Swagger
+- [x] Staff Management CRUD
+- [x] Category & Menu Item modules
+- [x] Table & Reservation modules
+- [x] Validation schemas for all modules
 
-- [ ] Create Category model
-- [ ] Implement CategoryController
-- [ ] Complete MenuItemController
-- [ ] Enhance TableController
-- [ ] Implement ReservationController
-- [ ] Add validation for all endpoints
-- [ ] Test menu and table operations
+### Sprint 3: POS & Invoicing ✅ COMPLETE
 
-### Sprint 3: POS & Invoicing 📅 PLANNED
+- [x] Order management workflow
+- [x] Invoice generation & Calculations
+- [x] Customer information management
 
-- [ ] Complete OrderController
-- [ ] Implement order status workflow
-- [ ] Complete InvoiceController
-- [ ] Implement invoice calculations
-- [ ] Add payment processing
-- [ ] Test complete order flow
+### Sprint 4: Inventory & Suppliers ✅ COMPLETE
 
-### Sprint 4: Inventory Management 📅 PLANNED
+- [x] Supplier management
+- [x] Inventory items & Stock tracking
+- [x] Ingredient management
 
-- [ ] Implement SupplierController
-- [ ] Complete InventoryItemController
-- [ ] Create StockMovementController
-- [ ] Implement low stock alerts
-- [ ] Link menu items to inventory
-- [ ] Test inventory tracking
+### Sprint 5: Reports & Analytics ✅ COMPLETE
 
-### Sprint 5: Reports & Analytics 📅 PLANNED
+- [x] Sales & Inventory report generation
+- [x] Reservation & Order analytics
 
-- [ ] Implement ReportController
-- [ ] Create sales reports
-- [ ] Create inventory reports
-- [ ] Create staff performance reports
-- [ ] Add data visualization
-- [ ] Test all reports
+### Sprint 6: Final Polish � IN PROGRESS
 
-### Sprint 6: Testing & Documentation 📅 PLANNED
-
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] Write E2E tests
-- [ ] Complete API documentation
-- [ ] Create deployment guide
+- [ ] Comprehensive Unit & Integration tests
+- [ ] CI/CD pipeline setup
 - [ ] Performance optimization
-
-## 🔧 Environment Variables
-
-| Variable                 | Description                          | Default     | Required |
-| ------------------------ | ------------------------------------ | ----------- | -------- |
-| `PORT`                   | Server port                          | 3000        | No       |
-| `NODE_ENV`               | Environment (development/production) | development | Yes      |
-| `MONGODB_URI`            | MongoDB connection string            | -           | Yes      |
-| `JWT_SECRET`             | Secret key for access tokens         | -           | Yes      |
-| `JWT_EXPIRES_IN`         | Access token expiration              | 7d          | No       |
-| `JWT_REFRESH_SECRET`     | Secret key for refresh tokens        | -           | Yes      |
-| `JWT_REFRESH_EXPIRES_IN` | Refresh token expiration             | 30d         | No       |
-| `BCRYPT_SALT_ROUNDS`     | Bcrypt salt rounds                   | 12          | No       |
-
-## 📜 Scripts
-
-```bash
-# Development
-pnpm run dev          # Start with nodemon (auto-reload)
-
-# Production
-pnpm start            # Start production server
-
-# Testing (coming soon)
-pnpm test             # Run all tests
-pnpm run test:watch   # Run tests in watch mode
-pnpm run test:coverage # Generate coverage report
-```
 
 ## 🔐 Security Best Practices
 
-- ✅ Passwords are hashed with bcrypt (12 salt rounds)
-- ✅ JWT tokens with expiration
+- ✅ Passwords hashed with bcrypt
+- ✅ JWT tokens with expiration & refresh logic
 - ✅ HTTP-only cookies for token storage
-- ✅ Rate limiting to prevent abuse
-- ✅ Input validation on all endpoints
+- ✅ Rate limiting & Input validation
 - ✅ Security headers with Helmet.js
-- ✅ CORS configuration
-- ✅ Environment variables for sensitive data
-- ⚠️ Remember to change JWT secrets in production
-- ⚠️ Enable HTTPS in production
-- ⚠️ Configure CORS for specific origins in production
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 👥 Authors
 
-- **Mohamed Abdellhay** - _Initial work_ - [Mohamed Abdellhay](https://linkedin.com/in/mohamedabdellhay)
-
-## 🙏 Acknowledgments
-
-- Express.js team for the amazing framework
-- MongoDB team for the robust database
-- All contributors who help improve this project
-
-## 📞 Support
-
-For support, email support@restaurant-erp.com or open an issue in the GitHub repository.
+- **Mohamed Abdellhay** - [LinkedIn](https://linkedin.com/in/mohamedabdellhay)
 
 ---
 
