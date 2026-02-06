@@ -250,6 +250,40 @@ Authorization: Bearer YOUR_JWT_TOKEN
             },
           },
         },
+        Table: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "697c64236af7d7011759f9b5",
+            },
+            number: {
+              type: "string",
+              example: "T1",
+            },
+            seats: {
+              type: "number",
+              example: 4,
+            },
+            status: {
+              type: "string",
+              enum: ["available", "occupied", "reserved", "inactive"],
+              example: "available",
+            },
+            restaurant: {
+              type: "string",
+              example: "697c64236af7d7011759f9b4",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
         SuccessResponse: {
           type: "object",
           properties: {

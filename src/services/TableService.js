@@ -9,12 +9,14 @@ class TableService {
     return table;
   }
   async create(data) {
-    const table = await TableModel.insertOne(data);
+    const table = await TableModel.create(data);
     return table;
   }
   async update(id, data) {
-    const table = await TableModel.findByIdAndUpdate(id, data, { new: true });
-    console.log(table);
+    const table = await TableModel.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
     return table;
   }
 

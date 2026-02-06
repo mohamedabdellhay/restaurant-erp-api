@@ -5,15 +5,14 @@ import ResponseHandler from "../utils/responseHandler.js";
 class TableController {
   index = asyncHandler(async (req, res) => {
     const tables = await TableService.getAllTable();
-    if (tables.length === 0) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, tables);
+    ResponseHandler.success(res, tables, "Tables retrieved successfully");
   });
 
   getTableById = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const table = await TableService.getTableById(id);
-    if (!table) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, table, "success");
+    if (!table) return ResponseHandler.error(res, "Table not found", 404);
+    ResponseHandler.success(res, table, "Table retrieved successfully");
   });
 
   create = asyncHandler(async (req, res) => {
@@ -26,20 +25,17 @@ class TableController {
     const id = req.params.id;
     const data = req.body;
     const updatedTable = await TableService.update(id, data);
-    if (!updatedTable) return ResponseHandler.noContent(res);
-    ResponseHandler.updated(res, updatedTable, "table updated successfully");
+    if (!updatedTable)
+      return ResponseHandler.error(res, "Table not found", 404);
+    ResponseHandler.success(res, updatedTable, "Table updated successfully");
   });
 
   delete = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedTable = await TableService.delete(id);
-    if (!deletedTable) return ResponseHandler.noContent();
-    ResponseHandler.success(
-      res,
-      deletedTable,
-      "Table Deleted Successfully",
-      200
-    );
+    if (!deletedTable)
+      return ResponseHandler.error(res, "Table not found", 404);
+    ResponseHandler.success(res, null, "Table deleted successfully");
   });
 }
 
