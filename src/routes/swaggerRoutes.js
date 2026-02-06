@@ -284,6 +284,63 @@ Authorization: Bearer YOUR_JWT_TOKEN
             },
           },
         },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
+        Reservation: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "697c64236af7d7011759f9b6",
+            },
+            table: {
+              type: "string",
+              example: "697c64236af7d7011759f9b5",
+            },
+            restaurant: {
+              type: "string",
+              example: "697c64236af7d7011759f9b4",
+            },
+            customer: {
+              type: "string",
+              example: "697c64236af7d7011759f9b7",
+            },
+            reservedAt: {
+              type: "string",
+              format: "date-time",
+              example: "2026-02-07T19:00:00Z",
+            },
+            numberOfGuests: {
+              type: "number",
+              example: 4,
+            },
+            durationMinutes: {
+              type: "number",
+              example: 90,
+            },
+            status: {
+              type: "string",
+              enum: ["pending", "confirmed", "cancelled", "completed"],
+              example: "pending",
+            },
+            notes: {
+              type: "string",
+              example: "Birthday dinner, window seat preferred.",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
         SuccessResponse: {
           type: "object",
           properties: {

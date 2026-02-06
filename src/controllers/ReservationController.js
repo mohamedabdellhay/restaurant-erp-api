@@ -1,36 +1,57 @@
+import ReservationService from "../services/ReservationService.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ResponseHandler from "../utils/responseHandler.js";
+
 class ReservationController {
-  async index(req, res) {
-    res.json({
-      message: "get all reservations",
-    });
-  }
+  index = asyncHandler(async (req, res) => {
+    const reservations = await ReservationService.getAll();
+    ResponseHandler.success(
+      res,
+      reservations,
+      "Reservations retrieved successfully",
+    );
+  });
 
-  async getReservationById(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `get reservation by id ${id}`,
-    });
-  }
+  getReservationById = asyncHandler(async (req, res) => {
+    const reservation = await ReservationService.getById(req.params.id);
+    if (!reservation)
+      return ResponseHandler.error(res, "Reservation not found", 404);
+    ResponseHandler.success(
+      res,
+      reservation,
+      "Reservation retrieved successfully",
+    );
+  });
 
-  async create(req, res) {
-    res.json({
-      message: "create new reservation",
-    });
-  }
+  create = asyncHandler(async (req, res) => {
+    const reservation = await ReservationService.create(req.body);
+    ResponseHandler.created(
+      res,
+      reservation,
+      "Reservation created successfully",
+    );
+  });
 
-  async update(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `update existed reservation by id ${id}`,
-    });
-  }
+  update = asyncHandler(async (req, res) => {
+    const reservation = await ReservationService.update(
+      req.params.id,
+      req.body,
+    );
+    if (!reservation)
+      return ResponseHandler.error(res, "Reservation not found", 404);
+    ResponseHandler.success(
+      res,
+      reservation,
+      "Reservation updated successfully",
+    );
+  });
 
-  async delete(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `delete reservation by id ${id}`,
-    });
-  }
+  delete = asyncHandler(async (req, res) => {
+    const reservation = await ReservationService.delete(req.params.id);
+    if (!reservation)
+      return ResponseHandler.error(res, "Reservation not found", 404);
+    ResponseHandler.success(res, null, "Reservation deleted successfully");
+  });
 }
 
 export default new ReservationController();
