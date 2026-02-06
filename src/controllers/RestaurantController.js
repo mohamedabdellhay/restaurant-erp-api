@@ -3,28 +3,57 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ResponseHandler from "../utils/responseHandler.js";
 
 class RestaurantController {
-  // get all restaurant
+  // get all restaurants
   index = asyncHandler(async (req, res) => {
-    const allRestaurant = await RestaurantService.getAll();
-    ResponseHandler.success(res, allRestaurant, "success", 200);
+    const allRestaurants = await RestaurantService.getAll();
+    ResponseHandler.success(
+      res,
+      allRestaurants,
+      "Restaurants retrieved successfully",
+      200,
+    );
+  });
+
+  // get current restaurant settings
+  getCurrent = asyncHandler(async (req, res) => {
+    const restaurant = await RestaurantService.getCurrent();
+    if (!restaurant) {
+      return ResponseHandler.success(
+        res,
+        {},
+        "No restaurant settings found",
+        200,
+      );
+    }
+    ResponseHandler.success(
+      res,
+      restaurant,
+      "Restaurant settings retrieved successfully",
+      200,
+    );
   });
 
   // create new restaurant
   create = asyncHandler(async (req, res) => {
     const data = req.body;
     const restaurant = await RestaurantService.create(data);
-    ResponseHandler.created(res, restaurant, "success");
+    ResponseHandler.created(
+      res,
+      restaurant,
+      "Restaurant settings created successfully",
+    );
   });
 
   // update restaurant
   update = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const data = req.body;
-    console.log(data);
-    console.log(id);
 
-    const restaurant = await RestaurantService.update({ _id: id }, data);
-    ResponseHandler.updated(res, restaurant, "restaurant updated successfully");
+    const restaurant = await RestaurantService.update(id, data);
+    if (!restaurant) {
+      return ResponseHandler.error(res, "Restaurant not found", 404);
+    }
+    ResponseHandler.success(res, restaurant, "Restaurant updated successfully");
   });
 }
 

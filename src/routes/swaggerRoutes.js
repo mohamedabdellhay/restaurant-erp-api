@@ -150,6 +150,89 @@ Authorization: Bearer YOUR_JWT_TOKEN
             },
           },
         },
+        Restaurant: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "697c64236af7d7011759f9b4",
+            },
+            name: {
+              type: "string",
+              example: "Gourmet Garden",
+            },
+            address: {
+              type: "string",
+              example: "123 Foodie St, Cairo, Egypt",
+            },
+            phone: {
+              type: "string",
+              example: "+20123456789",
+            },
+            email: {
+              type: "string",
+              format: "email",
+              example: "contact@gourmetgarden.com",
+            },
+            website: {
+              type: "string",
+              example: "https://gourmetgarden.com",
+            },
+            currency: {
+              type: "string",
+              example: "EGP",
+            },
+            settings: {
+              type: "object",
+              properties: {
+                taxPercent: {
+                  type: "number",
+                  example: 14,
+                },
+                serviceChargePercent: {
+                  type: "number",
+                  example: 12,
+                },
+              },
+            },
+            openingHours: {
+              type: "object",
+              properties: {
+                monday: { type: "string" },
+                tuesday: { type: "string" },
+                wednesday: { type: "string" },
+                thursday: { type: "string" },
+                friday: { type: "string" },
+                saturday: { type: "string" },
+                sunday: { type: "string" },
+              },
+            },
+            socialMedia: {
+              type: "object",
+              properties: {
+                facebook: { type: "string" },
+                instagram: { type: "string" },
+                twitter: { type: "string" },
+              },
+            },
+            vatNumber: {
+              type: "string",
+              example: "123-456-789",
+            },
+            crNumber: {
+              type: "string",
+              example: "987654",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
         Error: {
           type: "object",
           properties: {

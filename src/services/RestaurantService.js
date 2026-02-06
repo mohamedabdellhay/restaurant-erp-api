@@ -1,21 +1,28 @@
 import RestaurantModel from "../models/Restaurant.js";
 
 class RestaurantService {
-  // get all restaurant
+  // get all restaurants
   async getAll() {
-    const allRestaurant = await RestaurantModel.find();
-    return allRestaurant;
+    const allRestaurants = await RestaurantModel.find();
+    return allRestaurants;
   }
 
-  //   create new restaurant
+  // get current restaurant settings
+  async getCurrent() {
+    const restaurant = await RestaurantModel.findOne().sort({ createdAt: -1 });
+    return restaurant;
+  }
+
+  // create new restaurant
   async create(data) {
-    const restaurant = await RestaurantModel.insertOne(data);
+    const restaurant = await RestaurantModel.create(data);
     return restaurant;
   }
 
   async update(id, data) {
     const restaurant = await RestaurantModel.findByIdAndUpdate(id, data, {
       new: true,
+      runValidators: true,
     });
     return restaurant;
   }
