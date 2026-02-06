@@ -1,38 +1,42 @@
-//class to control category operations
+import CategoryService from "../services/CategoryService.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ResponseHandler from "../utils/responseHandler.js";
+
 class CategoryController {
-  // get all categories
-  async index(req, res) {
-    res.json({
-      message: "get all categories",
-    });
-  }
-  // get category by id
-  async getCategoryById(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `get category by id ${id}`,
-    });
-  }
-  // create new category
-  async create(req, res) {
-    res.json({
-      message: `create new category`,
-    });
-  }
-  // update existed category
-  async update(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `update existed category  id ${id}`,
-    });
-  }
-  // delete category by id
-  async delete(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `delete category with id ${id}`,
-    });
-  }
+  index = asyncHandler(async (req, res) => {
+    const categories = await CategoryService.getAllCategories();
+    ResponseHandler.success(
+      res,
+      categories,
+      "Categories retrieved successfully",
+    );
+  });
+
+  getCategoryById = asyncHandler(async (req, res) => {
+    const category = await CategoryService.getCategoryById(req.params.id);
+    if (!category) return ResponseHandler.error(res, "Category not found", 404);
+    ResponseHandler.success(res, category, "Category retrieved successfully");
+  });
+
+  create = asyncHandler(async (req, res) => {
+    const category = await CategoryService.createCategory(req.body);
+    ResponseHandler.created(res, category, "Category created successfully");
+  });
+
+  update = asyncHandler(async (req, res) => {
+    const category = await CategoryService.updateCategory(
+      req.params.id,
+      req.body,
+    );
+    if (!category) return ResponseHandler.error(res, "Category not found", 404);
+    ResponseHandler.success(res, category, "Category updated successfully");
+  });
+
+  delete = asyncHandler(async (req, res) => {
+    const category = await CategoryService.deleteCategory(req.params.id);
+    if (!category) return ResponseHandler.error(res, "Category not found", 404);
+    ResponseHandler.success(res, null, "Category deleted successfully");
+  });
 }
 
 export default new CategoryController();

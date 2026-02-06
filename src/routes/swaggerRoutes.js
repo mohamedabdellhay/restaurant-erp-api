@@ -284,12 +284,6 @@ Authorization: Bearer YOUR_JWT_TOKEN
             },
           },
         },
-            updatedAt: {
-              type: "string",
-              format: "date-time",
-            },
-          },
-        },
         Reservation: {
           type: "object",
           properties: {
@@ -339,6 +333,97 @@ Authorization: Bearer YOUR_JWT_TOKEN
               type: "string",
               format: "date-time",
             },
+          },
+        },
+        Category: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            name: { type: "string" },
+            description: { type: "string" },
+            image: { type: "string" },
+            isActive: { type: "boolean" },
+          },
+        },
+        MenuItem: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            name: { type: "string" },
+            description: { type: "string" },
+            price: { type: "number" },
+            category: { $ref: "#/components/schemas/Category" },
+            isActive: { type: "boolean" },
+            image: { type: "string" },
+          },
+        },
+        Order: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            orderNumber: { type: "number" },
+            type: { type: "string", enum: ["dineIn", "takeaway", "delivery"] },
+            table: { $ref: "#/components/schemas/Table" },
+            items: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  menuItem: { $ref: "#/components/schemas/MenuItem" },
+                  qty: { type: "number" },
+                  price: { type: "number" },
+                },
+              },
+            },
+            subtotal: { type: "number" },
+            tax: { type: "number" },
+            serviceCharge: { type: "number" },
+            total: { type: "number" },
+            status: {
+              type: "string",
+              enum: ["pending", "in_kitchen", "served", "paid", "cancelled"],
+            },
+            createdAt: { type: "string", format: "date-time" },
+          },
+        },
+        Invoice: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            order: { $ref: "#/components/schemas/Order" },
+            grandTotal: { type: "number" },
+            paymentMethod: {
+              type: "string",
+              enum: ["cash", "card", "wallet", "online"],
+            },
+            paymentStatus: {
+              type: "string",
+              enum: ["paid", "unpaid", "pending"],
+            },
+            createdAt: { type: "string", format: "date-time" },
+          },
+        },
+        InventoryItem: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            name: { type: "string" },
+            sku: { type: "string" },
+            unit: { type: "string" },
+            costPrice: { type: "number" },
+            stock: { type: "number" },
+            minStockAlert: { type: "number" },
+            supplier: { $ref: "#/components/schemas/Supplier" },
+          },
+        },
+        Supplier: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            name: { type: "string" },
+            phone: { type: "string" },
+            email: { type: "string", format: "email" },
+            isActive: { type: "boolean" },
           },
         },
         SuccessResponse: {

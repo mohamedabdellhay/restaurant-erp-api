@@ -1,36 +1,32 @@
 import menuItemModel from "../models/MenuItem.js";
 
 class MenuItemService {
-  // get all items
-  async getAllItems() {
-    const menuItems = await menuItemModel.find();
-    return menuItems;
+  async getAllItems(filter = {}) {
+    return await menuItemModel
+      .find(filter)
+      .populate("category", "name")
+      .sort({ name: 1 });
   }
 
-  //   get single item
   async getMenuItemById(id) {
-    const menuItem = await menuItemModel.findById(id);
-    return menuItem;
+    return await menuItemModel.findById(id).populate("category", "name");
   }
 
-  //  create new menu item
   async createMenuItem(data) {
-    const menuItem = await menuItemModel.insertOne(data);
-    return menuItem;
+    return await menuItemModel.create(data);
   }
 
-  //   update menu item
   async updateMenuItem(id, data) {
-    const menuItem = await menuItemModel.findByIdAndUpdate(id, data, {
-      new: true,
-    });
-    return menuItem;
+    return await menuItemModel
+      .findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true,
+      })
+      .populate("category", "name");
   }
 
-  //   delete menu item
   async deleteMenuItem(id) {
-    const menuItem = await menuItemModel.findByIdAndDelete(id);
-    return menuItem;
+    return await menuItemModel.findByIdAndDelete(id);
   }
 }
 

@@ -1,38 +1,63 @@
-import InventoryItemService from "../services/InventoryItemService.js";
+import InventoryService from "../services/InventoryService.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ResponseHandler from "../utils/responseHandler.js";
 
 class InventoryItemController {
   index = asyncHandler(async (req, res) => {
-    const items = await InventoryItemService.getAllItems();
-    if (items.length == 0) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, items, "success");
+    const items = await InventoryService.getAllItems();
+    ResponseHandler.success(
+      res,
+      items,
+      "Inventory items retrieved successfully",
+    );
   });
 
   getIngredientById = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const item = await InventoryItemService.getItemById(id);
-    if (!item) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, item, "success");
+    const item = await InventoryService.getItemById(req.params.id);
+    if (!item) {
+      return ResponseHandler.error(res, "Inventory item not found", 404);
+    }
+    ResponseHandler.success(res, item, "Inventory item retrieved successfully");
   });
 
   create = asyncHandler(async (req, res) => {
-    const data = req.body;
-    const item = await InventoryItemService.createItem(data);
-    ResponseHandler.created(res, item, "item added Successfully");
+    const item = await InventoryService.createItem(req.body);
+    ResponseHandler.created(res, item, "Inventory item created successfully");
   });
 
   update = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const data = req.body;
-    const item = await InventoryItemService.updateItem(id, data);
-    ResponseHandler.created(res, item, "item Updated Successfully");
+    const item = await InventoryService.updateItem(req.params.id, req.body);
+    if (!item) {
+      return ResponseHandler.error(res, "Inventory item not found", 404);
+    }
+    ResponseHandler.success(res, item, "Inventory item updated successfully");
+  });
+
+  updateStock = asyncHandler(async (req, res) => {
+    const { amount, type } = req.body;
+    const item = await InventoryService.updateStock(
+      req.params.id,
+      amount,
+      type,
+    );
+    ResponseHandler.success(res, item, "Stock updated successfully");
   });
 
   delete = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const item = await InventoryItemService.deleteItem(id);
-    ResponseHandler.success(res, item, "item deleted successfully");
+    const item = await InventoryService.deleteItem(req.params.id);
+    if (!item) {
+      return ResponseHandler.error(res, "Inventory item not found", 404);
+    }
+    ResponseHandler.success(res, null, "Inventory item deleted successfully");
+  });
+
+  getLowStock = asyncHandler(async (req, res) => {
+    const items = await InventoryService.getLowStockItems();
+    ResponseHandler.success(
+      res,
+      items,
+      "Low stock items retrieved successfully",
+    );
   });
 }
 

@@ -4,31 +4,51 @@ import ResponseHandler from "../utils/responseHandler.js";
 
 class InvoiceController {
   index = asyncHandler(async (req, res) => {
-    const invoices = await InvoiceService.getAllInvoice();
-    if (invoices.length === 0) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, invoices);
+    const invoices = await InvoiceService.getAllInvoices();
+    ResponseHandler.success(res, invoices, "Invoices retrieved successfully");
   });
 
   getInvoiceById = asyncHandler(async (req, res) => {
     const invoice = await InvoiceService.getInvoiceById(req.params.id);
-    if (!invoice) return ResponseHandler.noContent(res);
-    ResponseHandler.success(res, invoice);
+    if (!invoice) {
+      return ResponseHandler.error(res, "Invoice not found", 404);
+    }
+    ResponseHandler.success(res, invoice, "Invoice retrieved successfully");
   });
 
-  create = asyncHandler(async (req, res) => {
-    const data = await InvoiceService.createInvoice(req.body);
-    ResponseHandler.created(res, data, "Invoice Created Successfully");
+  // Create invoice from an order
+  createFromOrder = asyncHandler(async (req, res) => {
+    const invoice = await InvoiceService.generateFromOrder(
+      req.body.orderId,
+      req.user._id,
+    );
+    ResponseHandler.created(res, invoice, "Invoice generated successfully");
   });
 
-  update = asyncHandler(async (req, res) => {
-    const invoice = await InvoiceService.updateInvoice(req.params.id, req.body);
-    ResponseHandler.success(res, invoice, "invoice updated successfully");
+  updateStatus = asyncHandler(async (req, res) => {
+    const { status, method } = req.body;
+    const invoice = await InvoiceService.updatePaymentStatus(
+      req.params.id,
+      status,
+      method,
+    );
+    if (!invoice) {
+      return ResponseHandler.error(res, "Invoice not found", 404);
+    }
+    ResponseHandler.success(
+      res,
+      invoice,
+      "Invoice status updated successfully",
+    );
   });
 
-  async delete(req, res) {
+  delete = asyncHandler(async (req, res) => {
     const invoice = await InvoiceService.deleteInvoice(req.params.id);
-    ResponseHandler.success(res, invoice, "invoice deleted successfully");
-  }
+    if (!invoice) {
+      return ResponseHandler.error(res, "Invoice not found", 404);
+    }
+    ResponseHandler.success(res, null, "Invoice deleted successfully");
+  });
 }
 
 export default new InvoiceController();

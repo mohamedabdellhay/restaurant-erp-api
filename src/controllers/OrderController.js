@@ -1,36 +1,41 @@
+import OrderService from "../services/OrderService.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ResponseHandler from "../utils/responseHandler.js";
+
 class OrderController {
-  async index(req, res) {
-    res.json({
-      message: "get all orders",
-    });
-  }
+  index = asyncHandler(async (req, res) => {
+    const orders = await OrderService.getAllOrders();
+    ResponseHandler.success(res, orders, "Orders retrieved successfully");
+  });
 
-  async getOrderById(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `get order with id ${id}`,
-    });
-  }
+  getOrderById = asyncHandler(async (req, res) => {
+    const order = await OrderService.getOrderById(req.params.id);
+    if (!order) {
+      return ResponseHandler.error(res, "Order not found", 404);
+    }
+    ResponseHandler.success(res, order, "Order retrieved successfully");
+  });
 
-  async create(req, res) {
-    res.json({
-      message: "create new order",
-    });
-  }
+  create = asyncHandler(async (req, res) => {
+    const order = await OrderService.createOrder(req.body, req.user._id);
+    ResponseHandler.created(res, order, "Order created successfully");
+  });
 
-  async update(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `update order by id ${id}`,
-    });
-  }
+  update = asyncHandler(async (req, res) => {
+    const order = await OrderService.updateOrder(req.params.id, req.body);
+    if (!order) {
+      return ResponseHandler.error(res, "Order not found", 404);
+    }
+    ResponseHandler.success(res, order, "Order updated successfully");
+  });
 
-  async delete(req, res) {
-    const id = req.params.id;
-    res.json({
-      message: `delete order by ${id}`,
-    });
-  }
+  delete = asyncHandler(async (req, res) => {
+    const order = await OrderService.deleteOrder(req.params.id);
+    if (!order) {
+      return ResponseHandler.error(res, "Order not found", 404);
+    }
+    ResponseHandler.success(res, null, "Order deleted successfully");
+  });
 }
 
 export default new OrderController();
