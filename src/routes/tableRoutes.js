@@ -57,6 +57,19 @@ router.get("/", protect, TableController.index);
  *     responses:
  *       200:
  *         description: Table retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Table'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
@@ -82,12 +95,34 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Table'
+ *             type: object
+ *             required:
+ *               - number
+ *               - seats
+ *             properties:
+ *               number:
+ *                 type: string
+ *                 example: "T10"
+ *               seats:
+ *                 type: number
+ *                 example: 6
+ *               status:
+ *                 type: string
+ *                 enum: ["available", "occupied", "reserved", "inactive"]
+ *                 default: "available"
  *     responses:
  *       201:
  *         description: Table created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
  */
 router.post(
   "/",
@@ -118,12 +153,30 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Table'
+ *             type: object
+ *             properties:
+ *               number:
+ *                 type: string
+ *               seats:
+ *                 type: number
+ *               status:
+ *                 type: string
+ *                 enum: ["available", "occupied", "reserved", "inactive"]
  *     responses:
  *       200:
  *         description: Table updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       400:
  *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 router.patch(
   "/:id",
@@ -152,6 +205,16 @@ router.patch(
  *     responses:
  *       200:
  *         description: Table deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 router.delete(
   "/:id",
