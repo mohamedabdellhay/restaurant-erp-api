@@ -193,6 +193,41 @@ Authorization: Bearer YOUR_JWT_TOKEN
                   type: "number",
                   example: 12,
                 },
+                theme: {
+                  type: "object",
+                  description: "Business theme and color schema settings",
+                  properties: {
+                    primaryColor: {
+                      type: "string",
+                      format: "hex-color",
+                      example: "#3498db",
+                      description: "Primary brand color in hex format",
+                    },
+                    secondaryColor: {
+                      type: "string",
+                      format: "hex-color",
+                      example: "#2ecc71",
+                      description: "Secondary brand color in hex format",
+                    },
+                    accentColor: {
+                      type: "string",
+                      format: "hex-color",
+                      example: "#e74c3c",
+                      description: "Accent color for highlights in hex format",
+                    },
+                    logo: {
+                      type: "string",
+                      example: "https://example.com/custom-logo.png",
+                      description: "Custom logo URL for theme",
+                    },
+                    mode: {
+                      type: "string",
+                      enum: ["light", "dark"],
+                      example: "light",
+                      description: "Theme mode preference",
+                    },
+                  },
+                },
               },
             },
             openingHours: {

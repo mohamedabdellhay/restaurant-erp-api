@@ -58,8 +58,10 @@ class AuthController {
   login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    // Find staff with password
-    const staff = await Staff.findOne({ email }).select("+passwordHash");
+    // Find staff with password and populate restaurant
+    const staff = await Staff.findOne({ email })
+      .select("+passwordHash")
+      .populate("restaurant");
 
     if (!staff) {
       throw new AppError("Invalid credentials", 401);
@@ -93,12 +95,24 @@ class AuthController {
     // Remove password from response
     staff.passwordHash = undefined;
 
+    // Extract restaurant settings and append BASE_URL to logo
+    let restaurantSettings = staff.restaurant?.settings || null;
+    if (restaurantSettings && staff.restaurant?.logo) {
+      restaurantSettings = {
+        ...(restaurantSettings.toObject
+          ? restaurantSettings.toObject()
+          : restaurantSettings),
+        logo: `${process.env.BASE_URL}${staff.restaurant.logo}`,
+      };
+    }
+
     ResponseHandler.success(
       res,
       {
         staff,
         accessToken,
         refreshToken,
+        restaurantSettings,
       },
       "Logged in successfully",
     );
@@ -124,7 +138,31 @@ class AuthController {
   getProfile = asyncHandler(async (req, res) => {
     const staff = await Staff.findById(req.user._id).populate("restaurant");
 
-    ResponseHandler.success(res, staff, "Profile retrieved successfully");
+    // Convert to plain object
+    const staffObj = staff.toObject();
+
+    // Append BASE_URL to restaurant logos if restaurant is populated
+    if (staffObj.restaurant) {
+      // Helper to safely append BASE_URL
+      const safeAppendBaseUrl = (url) => {
+        if (!url) return url;
+        if (url.startsWith("http://") || url.startsWith("https://")) return url;
+        return `${process.env.BASE_URL}${url}`;
+      };
+
+      // Main logo
+      if (staffObj.restaurant.logo) {
+        staffObj.restaurant.logo = safeAppendBaseUrl(staffObj.restaurant.logo);
+      }
+      // Theme logo
+      if (staffObj.restaurant.settings?.theme?.logo) {
+        staffObj.restaurant.settings.theme.logo = safeAppendBaseUrl(
+          staffObj.restaurant.settings.theme.logo,
+        );
+      }
+    }
+
+    ResponseHandler.success(res, staffObj, "Profile retrieved successfully");
   });
 
   /**

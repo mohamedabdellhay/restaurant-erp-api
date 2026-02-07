@@ -22,6 +22,22 @@ export const createRestaurantValidator = [
     .optional()
     .isFloat({ min: 0 })
     .withMessage("Service charge percent must be a positive number"),
+  body("settings.theme.primaryColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Primary color must be a valid hex color"),
+  body("settings.theme.secondaryColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Secondary color must be a valid hex color"),
+  body("settings.theme.accentColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Accent color must be a valid hex color"),
+  body("settings.theme.mode")
+    .optional()
+    .isIn(["light", "dark"])
+    .withMessage("Mode must be either 'light' or 'dark'"),
 ];
 
 export const updateRestaurantValidator = [
@@ -40,6 +56,22 @@ export const updateRestaurantValidator = [
     .optional()
     .isFloat({ min: 0 })
     .withMessage("Service charge percent must be a positive number"),
+  body("settings.theme.primaryColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Primary color must be a valid hex color"),
+  body("settings.theme.secondaryColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Secondary color must be a valid hex color"),
+  body("settings.theme.accentColor")
+    .optional()
+    .isHexColor()
+    .withMessage("Accent color must be a valid hex color"),
+  body("settings.theme.mode")
+    .optional()
+    .isIn(["light", "dark"])
+    .withMessage("Mode must be either 'light' or 'dark'"),
 ];
 
 export const restaurantIdValidator = [

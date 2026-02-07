@@ -17,7 +17,11 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // Security middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",
@@ -38,6 +42,9 @@ app.use("/api", limiter);
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from uploads directory with CORS
+app.use("/uploads", cors(), express.static("uploads"));
 
 // Import app routes
 import appRoutes from "./routes/index.js";

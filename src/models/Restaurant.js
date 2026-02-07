@@ -26,6 +26,13 @@ const RestaurantSchema = new mongoose.Schema(
     settings: {
       taxPercent: { type: Number, default: 0 },
       serviceChargePercent: { type: Number, default: 0 },
+      theme: {
+        primaryColor: { type: String, default: "#000000" },
+        secondaryColor: { type: String, default: "#ffffff" },
+        accentColor: { type: String, default: "#ff0000" },
+        logo: String,
+        mode: { type: String, enum: ["light", "dark"], default: "light" },
+      },
     },
     openingHours: {
       monday: String,

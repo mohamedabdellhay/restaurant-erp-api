@@ -8,6 +8,7 @@ import {
   restaurantIdValidator,
 } from "../validators/restaurantValidator.js";
 import { handleValidationErrors } from "../middleware/validationMiddleware.js";
+import { uploadLogo } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -149,6 +150,66 @@ router.put(
   updateRestaurantValidator,
   handleValidationErrors,
   RestaurantController.update,
+);
+
+/**
+ * @swagger
+ * /restaurant/upload-logo:
+ *   post:
+ *     summary: Upload restaurant logo
+ *     description: Upload a logo image for the restaurant. Only accessible by Admins.
+ *     tags: [Restaurant]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               logo:
+ *                 type: string
+ *                 format: binary
+ *                 description: Logo image file (max 5MB, jpg/jpeg/png/gif/webp)
+ *               restaurantId:
+ *                 type: string
+ *                 description: Restaurant ID (optional, will use authenticated user's restaurant if not provided)
+ *     responses:
+ *       200:
+ *         description: Logo uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Logo uploaded successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     logo:
+ *                       type: string
+ *                       example: "/uploads/logos/logo-1234567890.png"
+ *                     restaurant:
+ *                       $ref: '#/components/schemas/Restaurant'
+ *       400:
+ *         description: No file uploaded or invalid file type
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+router.post(
+  "/upload-logo",
+  protect,
+  authorize("admin"),
+  uploadLogo.single("logo"),
+  RestaurantController.uploadLogo,
 );
 
 export default router;

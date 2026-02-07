@@ -145,6 +145,35 @@ router.post(
  *                     refreshToken:
  *                       type: string
  *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                     restaurantSettings:
+ *                       type: object
+ *                       description: Restaurant configuration and theme settings
+ *                       properties:
+ *                         taxPercent:
+ *                           type: number
+ *                           example: 14
+ *                         serviceChargePercent:
+ *                           type: number
+ *                           example: 12
+ *                         theme:
+ *                           type: object
+ *                           properties:
+ *                             primaryColor:
+ *                               type: string
+ *                               example: "#3498db"
+ *                             secondaryColor:
+ *                               type: string
+ *                               example: "#2ecc71"
+ *                             accentColor:
+ *                               type: string
+ *                               example: "#e74c3c"
+ *                             logo:
+ *                               type: string
+ *                               example: "https://example.com/logo.png"
+ *                             mode:
+ *                               type: string
+ *                               enum: [light, dark]
+ *                               example: "light"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
