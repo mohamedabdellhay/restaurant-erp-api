@@ -18,6 +18,8 @@ import roleRoutes from "./roleRoutes.js";
 import staffRoutes from "./staffRoutes.js";
 import restaurantRoutes from "./restaurantRoutes.js";
 
+import subscriptionRoutes from "./subscriptionRoutes.js";
+
 // mount all routes
 if (process.env.NODE_ENV === "development") {
   router.use("/docs", swaggerRoute);
@@ -37,5 +39,6 @@ router.use("/tables", tableRoutes);
 router.use("/roles", roleRoutes);
 router.use("/staff", staffRoutes);
 router.use("/restaurant", restaurantRoutes);
+router.use("/subscription", subscriptionRoutes);
 
 export default router;

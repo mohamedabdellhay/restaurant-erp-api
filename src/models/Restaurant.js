@@ -44,7 +44,19 @@ const RestaurantSchema = new mongoose.Schema(
     vatNumber: String,
     crNumber: String, // Commercial Registration Number
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
+
+RestaurantSchema.virtual("subscription", {
+  ref: "Subscription",
+  localField: "_id",
+  foreignField: "restaurant",
+  justOne: true,
+  match: { status: "active" }, // By default return active one, or we can remove match to get any
+});
 
 export default mongoose.model("Restaurant", RestaurantSchema);
