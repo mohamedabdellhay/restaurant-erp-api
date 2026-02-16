@@ -3,6 +3,12 @@ import groupRoutes from "../utils/groupRoutes.js";
 import SupplierController from "../controllers/SupplierController.js";
 import InventoryItemController from "../controllers/InventoryItemController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import {
+  validateInventoryItem,
+  validateSupplier,
+  validateStockUpdate,
+} from "../validators/inventoryValidator.js";
+import { handleValidationErrors } from "../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -55,7 +61,12 @@ router.group("/suppliers", (route) => {
    *       201:
    *         description: Supplier created
    */
-  route.post("/", SupplierController.create);
+  route.post(
+    "/",
+    validateSupplier,
+    handleValidationErrors,
+    SupplierController.create,
+  );
 
   /**
    * @swagger
@@ -101,7 +112,12 @@ router.group("/suppliers", (route) => {
    *       200:
    *         description: Supplier updated
    */
-  route.put("/:id", SupplierController.update);
+  route.put(
+    "/:id",
+    validateSupplier,
+    handleValidationErrors,
+    SupplierController.update,
+  );
 
   /**
    * @swagger
@@ -122,6 +138,56 @@ router.group("/suppliers", (route) => {
    *         description: Supplier deleted
    */
   route.delete("/:id", SupplierController.delete);
+
+  /**
+   * @swagger
+   * /inventory/suppliers/{id}/payments:
+   *   post:
+   *     summary: Add payment to supplier
+   *     tags: [Suppliers]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required: [amount]
+   *             properties:
+   *               amount: { type: number }
+   *               description: { type: string }
+   *     responses:
+   *       201:
+   *         description: Payment recorded
+   */
+  route.post("/:id/payments", SupplierController.addPayment);
+
+  /**
+   * @swagger
+   * /inventory/suppliers/{id}/statement:
+   *   get:
+   *     summary: Get supplier account statement
+   *     tags: [Suppliers]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: Account statement
+   */
+  route.get("/:id/statement", SupplierController.getStatement);
 });
 
 // inventoryItems operations
@@ -192,7 +258,12 @@ router.group("/items", (route) => {
    *       201:
    *         description: Item added
    */
-  route.post("/", InventoryItemController.create);
+  route.post(
+    "/",
+    validateInventoryItem,
+    handleValidationErrors,
+    InventoryItemController.create,
+  );
 
   /**
    * @swagger
@@ -218,7 +289,12 @@ router.group("/items", (route) => {
    *       200:
    *         description: Item updated
    */
-  route.put("/:id", InventoryItemController.update);
+  route.put(
+    "/:id",
+    validateInventoryItem,
+    handleValidationErrors,
+    InventoryItemController.update,
+  );
 
   /**
    * @swagger
@@ -247,7 +323,12 @@ router.group("/items", (route) => {
    *       200:
    *         description: Stock updated
    */
-  route.patch("/:id/stock", InventoryItemController.updateStock);
+  route.patch(
+    "/:id/stock",
+    validateStockUpdate,
+    handleValidationErrors,
+    InventoryItemController.updateStock,
+  );
 
   /**
    * @swagger

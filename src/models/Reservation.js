@@ -6,7 +6,7 @@ const ReservationSchema = new mongoose.Schema(
     table: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Table",
-      required: [true, "Table is required"],
+      required: false,
     },
     restaurant: {
       type: mongoose.Schema.Types.ObjectId,

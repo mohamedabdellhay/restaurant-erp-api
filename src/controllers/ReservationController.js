@@ -32,6 +32,15 @@ class ReservationController {
     );
   });
 
+  request = asyncHandler(async (req, res) => {
+    const reservation = await ReservationService.request(req.body);
+    ResponseHandler.created(
+      res,
+      reservation,
+      "Reservation request submitted successfully",
+    );
+  });
+
   update = asyncHandler(async (req, res) => {
     const reservation = await ReservationService.update(
       req.params.id,

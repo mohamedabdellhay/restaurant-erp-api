@@ -1,4 +1,5 @@
 import ReservationModel from "../models/Reservation.js";
+import CustomerModel from "../models/Customer.js";
 
 class ReservationService {
   async getAll(filter = {}) {
@@ -16,6 +17,38 @@ class ReservationService {
 
   async create(data) {
     return await ReservationModel.create(data);
+  }
+
+  async request(data) {
+    const { name, phone, email, restaurant, ...reservationData } = data;
+
+    if (!restaurant) {
+      throw new Error("Restaurant ID is required for reservation requests");
+    }
+
+    // Find or create customer within the specified restaurant
+    let customer = await CustomerModel.findOne({ phone, restaurant });
+
+    if (customer) {
+      if (name) customer.name = name;
+      if (email) customer.email = email;
+      await customer.save();
+    } else {
+      customer = await CustomerModel.create({
+        name,
+        phone,
+        email,
+        restaurant,
+      });
+    }
+
+    // Create reservation
+    return await ReservationModel.create({
+      ...reservationData,
+      restaurant,
+      customer: customer._id,
+      status: "pending",
+    });
   }
 
   async update(id, data) {

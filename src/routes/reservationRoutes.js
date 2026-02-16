@@ -4,6 +4,7 @@ import { protect } from "../middleware/authMiddleware.js";
 import { authorize } from "../middleware/roleMiddleware.js";
 import {
   createReservationValidator,
+  requestReservationValidator,
   updateReservationValidator,
   reservationIdValidator,
 } from "../validators/reservationValidator.js";
@@ -150,6 +151,70 @@ router.post(
   createReservationValidator,
   handleValidationErrors,
   ReservationController.create,
+);
+
+/**
+ * @swagger
+ * /reservations/request:
+ *   post:
+ *     summary: Request a new reservation (Guest)
+ *     description: Submit a reservation request without an immediate table assignment. Accessible by guests.
+ *     tags: [Reservations]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - phone
+ *               - reservedAt
+ *               - numberOfGuests
+ *               - restaurant
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "John Doe"
+ *               phone:
+ *                 type: string
+ *                 example: "1234567890"
+ *               email:
+ *                 type: string
+ *                 example: "john@example.com"
+ *               table:
+ *                 type: string
+ *                 example: "697c64236af7d7011759f9b5"
+ *                 description: "Optional Table ID"
+ *               reservedAt:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-02-07T19:00:00Z"
+ *               numberOfGuests:
+ *                 type: number
+ *                 example: 4
+ *               notes:
+ *                 type: string
+ *                 example: "Table near window"
+ *               restaurant:
+ *                 type: string
+ *                 example: "697c64236af7d7011759f9b2"
+ *                 description: "Restaurant ID (Required)"
+ *     responses:
+ *       201:
+ *         description: Reservation request submitted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+router.post(
+  "/request",
+  requestReservationValidator,
+  handleValidationErrors,
+  ReservationController.request,
 );
 
 /**

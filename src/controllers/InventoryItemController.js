@@ -4,7 +4,7 @@ import ResponseHandler from "../utils/responseHandler.js";
 
 class InventoryItemController {
   index = asyncHandler(async (req, res) => {
-    const items = await InventoryService.getAllItems();
+    const items = await InventoryService.getAllItems(req.user.restaurant);
     ResponseHandler.success(
       res,
       items,
@@ -13,7 +13,10 @@ class InventoryItemController {
   });
 
   getIngredientById = asyncHandler(async (req, res) => {
-    const item = await InventoryService.getItemById(req.params.id);
+    const item = await InventoryService.getItemById(
+      req.params.id,
+      req.user.restaurant,
+    );
     if (!item) {
       return ResponseHandler.error(res, "Inventory item not found", 404);
     }
@@ -21,12 +24,17 @@ class InventoryItemController {
   });
 
   create = asyncHandler(async (req, res) => {
-    const item = await InventoryService.createItem(req.body);
+    const data = { ...req.body, restaurant: req.user.restaurant };
+    const item = await InventoryService.createItem(data);
     ResponseHandler.created(res, item, "Inventory item created successfully");
   });
 
   update = asyncHandler(async (req, res) => {
-    const item = await InventoryService.updateItem(req.params.id, req.body);
+    const item = await InventoryService.updateItem(
+      req.params.id,
+      req.user.restaurant,
+      req.body,
+    );
     if (!item) {
       return ResponseHandler.error(res, "Inventory item not found", 404);
     }
@@ -37,14 +45,19 @@ class InventoryItemController {
     const { amount, type } = req.body;
     const item = await InventoryService.updateStock(
       req.params.id,
+      req.user.restaurant,
       amount,
       type,
+      req.user._id,
     );
     ResponseHandler.success(res, item, "Stock updated successfully");
   });
 
   delete = asyncHandler(async (req, res) => {
-    const item = await InventoryService.deleteItem(req.params.id);
+    const item = await InventoryService.deleteItem(
+      req.params.id,
+      req.user.restaurant,
+    );
     if (!item) {
       return ResponseHandler.error(res, "Inventory item not found", 404);
     }
@@ -52,7 +65,7 @@ class InventoryItemController {
   });
 
   getLowStock = asyncHandler(async (req, res) => {
-    const items = await InventoryService.getLowStockItems();
+    const items = await InventoryService.getLowStockItems(req.user.restaurant);
     ResponseHandler.success(
       res,
       items,
