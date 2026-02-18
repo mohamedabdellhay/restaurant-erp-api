@@ -41,6 +41,27 @@ router.get("/", OrderController.index);
 
 /**
  * @swagger
+ * /orders/search:
+ *   get:
+ *     summary: Search orders by customer name or phone
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search query (customer name or phone)
+ *     responses:
+ *       200:
+ *         description: List of matching orders
+ */
+router.get("/search", OrderController.search);
+
+/**
+ * @swagger
  * /orders/{id}:
  *   get:
  *     summary: Get order by ID

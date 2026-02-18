@@ -9,7 +9,7 @@ const InvoiceSchema = new mongoose.Schema(
     },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // ممكن يكون مرتبط بالعميل المسجل
+      ref: "Customer", // ممكن يكون مرتبط بالعميل المسجل
     },
     table: {
       type: mongoose.Schema.Types.ObjectId,

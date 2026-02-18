@@ -31,8 +31,8 @@ export const protect = asyncHandler(async (req, res, next) => {
   // Get user from token
   const staff = await Staff.findById(decoded.id).select("-passwordHash");
 
-  if (!staff) {
-    throw new AppError("User no longer exists", 401);
+  if (!staff.isActive) {
+    throw new AppError("Your account has been deactivated", 401);
   }
 
   // Attach user to request
@@ -59,7 +59,7 @@ export const optionalAuth = asyncHandler(async (req, res, next) => {
     try {
       const decoded = tokenHelper.verifyAccessToken(token);
       const staff = await Staff.findById(decoded.id).select("-passwordHash");
-      if (staff) {
+      if (staff && staff.isActive) {
         req.user = staff;
       }
     } catch (error) {

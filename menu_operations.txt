@@ -1,0 +1,77 @@
+# Menu API Operations Guide
+
+This document outlines the available endpoints for managing the restaurant menu.
+
+## Base URL
+`/api/menu`
+
+## Authentication
+- Public endpoints: List and Get by ID do not require a token (unless the frontend prefers to send it).
+- Admin/Manager endpoints: Require a Bearer Token in the `Authorization` header.
+
+---
+
+## 1. List All Menu Items
+Retrieve the full menu or filter by category.
+
+- **Method**: `GET`
+- **URL**: `/menu`
+- **Query Parameters**:
+  - `category`: (Optional) Category ID to filter items.
+- **Response**: List of menu item objects.
+
+## 2. Get Menu Item Details
+Retrieve full details for a specific menu item.
+
+- **Method**: `GET`
+- **URL**: `/menu/:id`
+- **Response**: Detailed menu item object.
+
+## 3. Create Menu Item
+Add a new item to the menu. **[Admin or Manager Only]**
+
+- **Method**: `POST`
+- **URL**: `/menu`
+- **Request Body**:
+  ```json
+  {
+    "name": "Steak",
+    "description": "Grilled ribeye steak",
+    "price": 25.99,
+    "category": "category_id_here",
+    "isActive": true,
+    "image": "image_url_here",
+    "recipe": [
+      { "inventoryItem": "item_id", "qty": 0.5 }
+    ],
+    "modifiers": [
+      { "name": "Well Done", "price": 0 }
+    ]
+  }
+  ```
+- **Response**: The newly created menu item.
+
+## 4. Update Menu Item
+Update details for an existing menu item. **[Admin or Manager Only]**
+
+- **Method**: `PUT`
+- **URL**: `/menu/:id`
+- **Request Body**: Same as Create (can be partial).
+- **Response**: Updated menu item object.
+
+## 5. Delete Menu Item
+Permanently remove an item from the menu. **[Admin Only]**
+
+- **Method**: `DELETE`
+- **URL**: `/menu/:id`
+- **Response**: Success message.
+
+---
+
+## Technical Notes
+- **Category Reference**: Menu items must be linked to a valid `Category` ID.
+- **Recipe Management**: If recipe inventory tracking is enabled, ensure `inventoryItem` IDs are correct.
+- **RBAC**: 
+  - `admin`: Full access (Create, Update, Delete).
+  - `manager`: Create and Update access only.
+  - `waiter`/`cashier`/`chef`: Read-only access to menu items.

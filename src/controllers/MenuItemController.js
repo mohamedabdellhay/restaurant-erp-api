@@ -1,6 +1,7 @@
 import MenuItemService from "../services/MenuItemService.js";
 import ResponseHandler from "../utils/responseHandler.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { appendBaseUrlToItems, removeBaseUrlFromItem } from "../utils/urlHelper.js";
 
 class MenuItemController {
   index = asyncHandler(async (req, res) => {
@@ -8,9 +9,11 @@ class MenuItemController {
     if (req.query.category) filter.category = req.query.category;
 
     const menuItems = await MenuItemService.getAllItems(filter);
+    const menuItemsWithUrl = appendBaseUrlToItems(menuItems);
+
     ResponseHandler.success(
       res,
-      menuItems,
+      menuItemsWithUrl,
       "Menu items retrieved successfully",
     );
   });
@@ -18,21 +21,28 @@ class MenuItemController {
   getMenuItemById = asyncHandler(async (req, res) => {
     const menuItem = await MenuItemService.getMenuItemById(req.params.id);
     if (!menuItem) return ResponseHandler.error(res, "Item not found", 404);
-    ResponseHandler.success(res, menuItem, "Menu item retrieved successfully");
+    
+    const menuItemWithUrl = appendBaseUrlToItems(menuItem);
+    ResponseHandler.success(res, menuItemWithUrl, "Menu item retrieved successfully");
   });
 
   create = asyncHandler(async (req, res) => {
-    const menuItem = await MenuItemService.createMenuItem(req.body);
-    ResponseHandler.created(res, menuItem, "Menu item created successfully");
+    const data = removeBaseUrlFromItem(req.body);
+    const menuItem = await MenuItemService.createMenuItem(data);
+    const menuItemWithUrl = appendBaseUrlToItems(menuItem);
+    ResponseHandler.created(res, menuItemWithUrl, "Menu item created successfully");
   });
 
   update = asyncHandler(async (req, res) => {
+    const data = removeBaseUrlFromItem(req.body);
     const menuItem = await MenuItemService.updateMenuItem(
       req.params.id,
-      req.body,
+      data,
     );
-    if (!menuItem) return ResponseHandler.error(res, "Item not found", 404);
-    ResponseHandler.success(res, menuItem, "Menu item updated successfully");
+    if (!menuItem) return ResponseHandler.error(res, "Item find not found", 404);
+    
+    const menuItemWithUrl = appendBaseUrlToItems(menuItem);
+    ResponseHandler.success(res, menuItemWithUrl, "Menu item updated successfully");
   });
 
   delete = asyncHandler(async (req, res) => {

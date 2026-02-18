@@ -1,16 +1,41 @@
 import Staff from "../models/Staff.js";
+import RestaurantService from "../services/RestaurantService.js";
 import tokenHelper from "../utils/tokenHelper.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ResponseHandler from "../utils/responseHandler.js";
 import AppError from "../utils/errors/AppError.js";
+import { appendBaseUrl } from "../utils/urlHelper.js";
 
 class AuthController {
+  /**
+   * Helper to format restaurant data with absolute URLs
+   * @private
+   */
+  _formatRestaurant(restaurant) {
+    if (!restaurant) return null;
+
+    const restaurantObj = restaurant.toObject ? restaurant.toObject() : restaurant;
+
+    // Resolve main logo
+    if (restaurantObj.logo) {
+      restaurantObj.logo = appendBaseUrl(restaurantObj.logo);
+    }
+
+    // Resolve settings theme logo
+    if (restaurantObj.settings?.theme?.logo) {
+      restaurantObj.settings.theme.logo = appendBaseUrl(
+        restaurantObj.settings.theme.logo,
+      );
+    }
+
+    return restaurantObj;
+  }
   /**
    * Register new staff member
    * POST /api/auth/register
    */
   register = asyncHandler(async (req, res) => {
-    const { name, email, password, role, restaurant } = req.body;
+    const { name, email, password, role, restaurant: restaurantId } = req.body;
 
     // Check if user already exists
     const existingStaff = await Staff.findOne({ email });
@@ -24,7 +49,7 @@ class AuthController {
       email,
       passwordHash: password,
       role,
-      restaurant,
+      restaurant: restaurantId,
     });
 
     // Generate tokens
@@ -32,6 +57,18 @@ class AuthController {
       id: staff._id,
       role: staff.role,
     });
+
+    // Populate and format restaurant
+    await staff.populate("restaurant");
+    let formattedRestaurant = this._formatRestaurant(staff.restaurant);
+
+    // Fallback to latest restaurant if not linked
+    if (!formattedRestaurant) {
+      const defaultRestaurant = await RestaurantService.getCurrent();
+      formattedRestaurant = this._formatRestaurant(defaultRestaurant);
+    }
+
+    const restaurantSettings = formattedRestaurant?.settings || null;
 
     // Set cookie
     res.cookie("token", accessToken, {
@@ -46,6 +83,8 @@ class AuthController {
         staff,
         accessToken,
         refreshToken,
+        restaurant: formattedRestaurant,
+        restaurantSettings,
       },
       "Staff registered successfully",
     );
@@ -95,16 +134,16 @@ class AuthController {
     // Remove password from response
     staff.passwordHash = undefined;
 
-    // Extract restaurant settings and append BASE_URL to logo
-    let restaurantSettings = staff.restaurant?.settings || null;
-    if (restaurantSettings && staff.restaurant?.logo) {
-      restaurantSettings = {
-        ...(restaurantSettings.toObject
-          ? restaurantSettings.toObject()
-          : restaurantSettings),
-        logo: `${process.env.BASE_URL}${staff.restaurant.logo}`,
-      };
+    // Format restaurant data
+    let formattedRestaurant = this._formatRestaurant(staff.restaurant);
+
+    // Fallback to latest restaurant if not linked
+    if (!formattedRestaurant) {
+      const defaultRestaurant = await RestaurantService.getCurrent();
+      formattedRestaurant = this._formatRestaurant(defaultRestaurant);
     }
+
+    const restaurantSettings = formattedRestaurant?.settings || null;
 
     ResponseHandler.success(
       res,
@@ -112,6 +151,7 @@ class AuthController {
         staff,
         accessToken,
         refreshToken,
+        restaurant: formattedRestaurant,
         restaurantSettings,
       },
       "Logged in successfully",
@@ -141,26 +181,17 @@ class AuthController {
     // Convert to plain object
     const staffObj = staff.toObject();
 
-    // Append BASE_URL to restaurant logos if restaurant is populated
-    if (staffObj.restaurant) {
-      // Helper to safely append BASE_URL
-      const safeAppendBaseUrl = (url) => {
-        if (!url) return url;
-        if (url.startsWith("http://") || url.startsWith("https://")) return url;
-        return `${process.env.BASE_URL}${url}`;
-      };
+    // Format restaurant if present
+    let formattedRestaurant = this._formatRestaurant(staff.restaurant);
 
-      // Main logo
-      if (staffObj.restaurant.logo) {
-        staffObj.restaurant.logo = safeAppendBaseUrl(staffObj.restaurant.logo);
-      }
-      // Theme logo
-      if (staffObj.restaurant.settings?.theme?.logo) {
-        staffObj.restaurant.settings.theme.logo = safeAppendBaseUrl(
-          staffObj.restaurant.settings.theme.logo,
-        );
-      }
+    // Fallback if not linked
+    if (!formattedRestaurant) {
+      const defaultRestaurant = await RestaurantService.getCurrent();
+      formattedRestaurant = this._formatRestaurant(defaultRestaurant);
     }
+
+    staffObj.restaurant = formattedRestaurant;
+    staffObj.restaurantSettings = formattedRestaurant?.settings || null;
 
     ResponseHandler.success(res, staffObj, "Profile retrieved successfully");
   });

@@ -1,0 +1,39 @@
+# Image Upload API Operations Guide
+
+This document outlines how to upload images to the Restaurant ERP system.
+
+## Base URL
+`/api/upload`
+
+## Authentication
+Requires a Bearer Token in the `Authorization` header.
+`Authorization: Bearer <your_jwt_token>`
+
+---
+
+## 1. Upload Image
+Upload a single image file.
+
+- **Method**: `POST`
+- **URL**: `/upload`
+- **Content-Type**: `multipart/form-data`
+- **Request Parameters**:
+  - `image`: The file to upload (Binary).
+- **Restrictions**:
+  - Allowed types: `jpeg`, `jpg`, `png`, `gif`, `webp`.
+  - Max file size: `10MB`.
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully",
+    "data": {
+      "path": "/uploads/images/filename.png",
+      "url": "http://your-base-url/uploads/images/filename.png"
+    }
+  }
+  ```
+
+## Usage in Frontend
+- Use **`data.url`** for immediate display in your UI.
+- Use **`data.path`** to send back to the server when creating/updating menu items or categories. The server will store this relative path in the database.

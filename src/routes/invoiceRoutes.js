@@ -143,4 +143,29 @@ router.put("/:id/status", InvoiceController.updateStatus);
  */
 router.delete("/:id", InvoiceController.delete);
 
+/**
+ * @swagger
+ * /invoices/{id}/pdf:
+ *   get:
+ *     summary: Download invoice as PDF
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: PDF file
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.get("/:id/pdf", InvoiceController.downloadPDF);
+
 export default router;

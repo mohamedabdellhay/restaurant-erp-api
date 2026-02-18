@@ -36,6 +36,15 @@ class OrderController {
     }
     ResponseHandler.success(res, null, "Order deleted successfully");
   });
+
+  search = asyncHandler(async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+      return ResponseHandler.error(res, "Search query is required", 400);
+    }
+    const orders = await OrderService.searchOrders(query);
+    ResponseHandler.success(res, orders, "Orders retrieved successfully");
+  });
 }
 
 export default new OrderController();

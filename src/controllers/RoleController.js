@@ -1,34 +1,26 @@
+import ResponseHandler from "../utils/responseHandler.js";
+
 class RoleController {
   async index(req, res) {
-    res.json({
-      message: "get all roles",
-    });
+    ResponseHandler.success(res, null, "Roles retrieved successfully");
   }
 
   async create(req, res) {
-    res.json({
-      message: "create new role",
-    });
+    ResponseHandler.created(res, null, "Role created successfully");
   }
 
   async update(req, res) {
     const id = req.params.id;
-    res.json({
-      message: "update existed role",
-    });
+    ResponseHandler.updated(res, null, "Role updated successfully");
   }
 
   async delete(req, res) {
     const id = req.params.id;
-    res.json({
-      message: `delete role ${id}`,
-    });
+    ResponseHandler.success(res, null, "Role deleted successfully");
   }
 
   async getAllPermissions(req, res) {
-    res.json({
-      message: "all roles permissions",
-    });
+    ResponseHandler.success(res, null, "Permissions retrieved successfully");
   }
 }
 

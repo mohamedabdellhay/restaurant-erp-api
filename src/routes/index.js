@@ -20,6 +20,8 @@ import restaurantRoutes from "./restaurantRoutes.js";
 
 import subscriptionRoutes from "./subscriptionRoutes.js";
 import customerRoutes from "./customerRoutes.js";
+import dashboardRoutes from "./dashboardRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
 
 // mount all routes
 if (process.env.NODE_ENV === "development") {
@@ -42,5 +44,7 @@ router.use("/staff", staffRoutes);
 router.use("/restaurant", restaurantRoutes);
 router.use("/subscription", subscriptionRoutes);
 router.use("/customers", customerRoutes);
+router.use("/dashboard", dashboardRoutes);
+router.use("/upload", uploadRoutes);
 
 export default router;

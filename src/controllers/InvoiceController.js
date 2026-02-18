@@ -49,6 +49,18 @@ class InvoiceController {
     }
     ResponseHandler.success(res, null, "Invoice deleted successfully");
   });
+
+  downloadPDF = asyncHandler(async (req, res) => {
+    const doc = await InvoiceService.generateInvoicePDF(req.params.id);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice-${req.params.id}.pdf`,
+    );
+
+    doc.pipe(res);
+  });
 }
 
 export default new InvoiceController();

@@ -179,7 +179,11 @@ class SubscriptionController {
     // 1. Validate Signature
     const isValid = KashierService.validateCallback(query);
     if (!isValid) {
-      return res.status(400).send("Invalid Payment Signature or Status");
+      return ResponseHandler.error(
+        res,
+        "Invalid Payment Signature or Status",
+        400,
+      );
     }
 
     // 2. Update Subscription
@@ -194,7 +198,7 @@ class SubscriptionController {
 
     const subscription = await Subscription.findById(subscriptionId);
     if (!subscription) {
-      return res.status(404).send("Subscription not found");
+      return ResponseHandler.error(res, "Subscription not found", 404);
     }
 
     if (subscription.status !== "active") {

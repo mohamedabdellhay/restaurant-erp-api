@@ -1,0 +1,57 @@
+# User Roles and Permissions Documentation
+
+This document describes the roles and permissions for the Restaurant ERP system.
+
+## Roles Summary
+
+1. **Admin**: Full system access, including staff management and system-wide visibility.
+2. **Manager**: High administrative access, including dashboard analytics and customer management.
+3. **Cashier**: POS (Point of Sale) operations, order management, and basic customer search.
+4. **Waiter**: POS operations (orders, tables) and viewing menu.
+5. **Chef**: Order management (viewing/updating order status) and inventory viewing.
+
+---
+
+## Detailed Permissions
+
+### 1. Staff Management
+- **Create/Update/Delete Staff**: [Admin Only]
+- **Toggle Staff Status**: [Admin Only]
+- **View Staff Details**: [Admin, Manager]
+
+### 2. Dashboard & Analytics
+- **Overview, Revenue, Top Items, Performance**: [Admin, Manager]
+- **Real-time Metrics**: [Admin, Manager]
+- **Inventory Alerts**: [Admin, Manager]
+
+### 3. Customers
+- **View All Customers**: [Admin, Manager]
+- **Search Customers**: [Any logged-in staff]
+- **Create/Update Customer**: [Any logged-in staff]
+- **Delete Customer**: [Admin Only]
+
+### 4. Reservations
+- **View All Reservations**: [Admin, Manager]
+- **Create Reservation**: [Admin, Manager]
+- **Update Reservation Status**: [Admin, Manager]
+- **Delete Reservation**: [Admin Only]
+- **Guest Request**: [Public - No login required]
+
+### 5. Orders & POS
+- **View Orders**: [Any logged-in staff]
+- **Create/Update/Delete Order**: [Any logged-in staff]
+  *Note: Deletion is typically reserved for correcting errors; regular staff can perform this unless further restricted.*
+
+### 6. Inventory & Suppliers
+- **View Inventory/Suppliers**: [Any logged-in staff]
+- **Create/Update Items/Suppliers**: [Any logged-in staff]
+- **Manage Payments/Statements**: [Any logged-in staff]
+  *Note: These routes are protected by authentication but currently don't have explicit role restrictions beyond that.*
+
+---
+
+## Technical Implementation Notes
+- **Authentication**: JWT Bearer token required for all routes (except Guest Reservation Request).
+- **Middleware**: Role enforcement is handled via `authorize('role1', 'role2')` in backend routes.
+- **Default Role**: New staff accounts default to `cashier` if not specified.
+- **Enumerated Roles**: `["admin", "manager", "cashier", "chef", "waiter"]`

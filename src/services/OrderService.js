@@ -1,5 +1,6 @@
 import OrderModel from "../models/Order.js";
 import MenuItemModel from "../models/MenuItem.js";
+import CustomerModel from "../models/Customer.js";
 import RestaurantService from "./RestaurantService.js";
 
 class OrderService {
@@ -7,6 +8,7 @@ class OrderService {
     return await OrderModel.find(filter)
       .populate("table", "number")
       .populate("items.menuItem", "name price")
+      .populate("customer", "name phone")
       .sort({ createdAt: -1 });
   }
 
@@ -105,6 +107,26 @@ class OrderService {
 
   async deleteOrder(id) {
     return await OrderModel.findByIdAndDelete(id);
+  }
+
+  async searchOrders(query) {
+    // 1. Search for matching customers
+    const customers = await CustomerModel.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { phone: { $regex: query, $options: "i" } },
+      ],
+    }).select("_id");
+
+    const customerIds = customers.map((c) => c._id);
+
+    // 2. Find orders for these customers
+    return await OrderModel.find({
+      customer: { $in: customerIds },
+    })
+      .populate("customer", "name phone")
+      .populate("table", "number")
+      .sort({ createdAt: -1 });
   }
 }
 

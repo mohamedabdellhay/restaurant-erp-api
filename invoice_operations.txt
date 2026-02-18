@@ -1,0 +1,84 @@
+# Invoice API Operations Guide
+
+This document outlines the available endpoints for managing invoices in the Restaurant ERP system.
+
+## Base URL
+`/api/invoices` (depending on your global API prefix)
+
+## Authentication
+All endpoints require a Bearer Token in the `Authorization` header.
+`Authorization: Bearer <your_jwt_token>`
+
+---
+
+## 1. List All Invoices
+Retrieve a list of all generated invoices.
+
+- **Method**: `GET`
+- **URL**: `/invoices`
+- **Response**: List of invoice objects.
+
+## 2. Get Invoice Details
+Retrieve full details for a specific invoice.
+
+- **Method**: `GET`
+- **URL**: `/invoices/:id`
+- **Response**: Detailed invoice object including order, customer, and items.
+
+## 3. Generate Invoice from Order
+Create a new invoice based on an existing order.
+
+- **Method**: `POST`
+- **URL**: `/invoices`
+- **Request Body**:
+  ```json
+  {
+    "orderId": "697c64236af7d7011759f9b4"
+  }
+  ```
+- **Response**: The newly created invoice object.
+
+## 4. Update Payment Status
+Update the payment status and method for an invoice.
+
+- **Method**: `PUT`
+- **URL**: `/invoices/:id/status`
+- **Request Body**:
+  ```json
+  {
+    "status": "paid",   // Options: "paid", "unpaid", "pending"
+    "method": "card"    // Options: "cash", "card", "wallet", "online"
+  }
+  ```
+- **Response**: Updated invoice object.
+
+## 5. Download Invoice PDF
+Download the invoice as a formatted PDF file.
+
+- **Method**: `GET`
+- **URL**: `/invoices/:id/pdf`
+- **Notes**: This endpoint returns a binary PDF stream. Use `window.open` or a hidden link to trigger the download.
+- **Example**: `GET /invoices/67b24385f096706e.../pdf`
+
+## 6. Delete Invoice
+Permanently remove an invoice.
+
+- **Method**: `DELETE`
+- **URL**: `/invoices/:id`
+- **Response**: Success message.
+
+---
+
+## Data Models Reference
+
+### Invoice Object Keys
+- `_id`: String (Unique ID)
+- `order`: Object (Reference to Order)
+- `customer`: Object (Reference to Customer)
+- `items`: Array (List of products, quantities, prices)
+- `subTotal`: Number
+- `taxPercent`: Number
+- `grandTotal`: Number
+- `paymentStatus`: String ("paid", "unpaid", "pending")
+- `paymentMethod`: String ("cash", "card", etc.)
+- `issuedBy`: Object (Staff member reference)
