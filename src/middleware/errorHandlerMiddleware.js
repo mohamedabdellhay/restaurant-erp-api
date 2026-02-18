@@ -1,4 +1,5 @@
 import AppError from "../utils/errors/AppError.js";
+import logger from "../utils/logger.js";
 // Handle specific error types
 
 const handleCastErrorDB = (err) => {
@@ -39,7 +40,7 @@ const sendErrorDev = (err, res) => {
 };
 
 // Send error in production
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
   // Operational errors: send message to client
   if (err.isOperational) {
     res.status(err.statusCode).json({
@@ -49,7 +50,7 @@ const sendErrorProd = (err, res) => {
   }
   // Programming or unknown errors: don't leak details
   else {
-    console.error("ERROR", err);
+    logger.error("Programming or unknown error", err, req.user?._id || req.user?.id);
 
     res.status(500).json({
       success: false,
@@ -76,7 +77,7 @@ const errorHandler = (err, req, res, next) => {
     if (err.name === "JsonWebTokenError") error = handleJWTError();
     if (err.name === "TokenExpiredError") error = handleJWTExpiredError();
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
 

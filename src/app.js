@@ -9,12 +9,26 @@ import {
   notFoundHandler,
   errorHandler,
 } from "./middleware/errorHandlerMiddleware.js";
+import logger from "./utils/logger.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to DB
 connectDB();
+
+// Request logging middleware
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    const isStateChanging = ["POST", "PUT", "DELETE", "PATCH"].includes(
+      req.method,
+    );
+    const userId = isStateChanging ? req.user?._id || req.user?.id : null;
+
+    logger.info(`${req.method} ${req.originalUrl} - ${res.statusCode}`, userId);
+  });
+  next();
+});
 
 // Security middleware
 app.use(
